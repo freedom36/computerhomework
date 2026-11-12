@@ -1,0 +1,1958 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>化学实验学习平台</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%231e6091'/%3E%3Cpath d='M9 4h6M9 4v5L6 15a2 2 0 0 0 1.8 3h8.4A2 2 0 0 0 18 15l-3-6V4' fill='none' stroke='%23e9f5ff' stroke-width='1.4' stroke-linecap='round'/%3E%3Cpath d='M8.5 13h7' stroke='%2349c5a8' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --navy:#12304e;
+  --blue:#1e6091;
+  --teal:#49c5a8;
+  --teal-soft:#e3f6f0;
+  --bg:#f4f7fa;
+  --ink:#1c2b3a;
+  --muted:#64748b;
+  --line:#dfe7ee;
+  --card:#ffffff;
+  --warn:#c0392b;
+  --chip:#eef4fb;
+  --chip-line:#cfe0f0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.7;
+  min-height:100vh;
+}
+a{color:var(--blue);text-decoration:none}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px}
+
+/* ===== 顶部栏 ===== */
+header{
+  background:linear-gradient(135deg,var(--navy),var(--blue));
+  color:#fff;padding:34px 0 0;
+}
+.header-inner{display:flex;align-items:center;gap:14px;padding-bottom:26px}
+.logo{
+  width:46px;height:46px;flex:none;border-radius:12px;
+  background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;
+}
+.logo svg{width:26px;height:26px}
+.header-inner h1{font-size:22px;font-weight:700;letter-spacing:.5px}
+.header-inner p{font-size:13px;opacity:.82;margin-top:2px}
+
+/* ===== 搜索区 ===== */
+.search-band{background:linear-gradient(135deg,var(--navy),var(--blue));padding-bottom:40px}
+.search-box{
+  position:relative;max-width:640px;margin:0 auto;
+}
+.search-box input{
+  width:100%;padding:16px 92px 16px 20px;font-size:16px;border:none;border-radius:14px;
+  box-shadow:0 8px 24px rgba(18,48,78,.28);outline:none;color:var(--ink);
+}
+.search-box button{
+  position:absolute;right:8px;top:8px;bottom:8px;padding:0 22px;border:none;border-radius:10px;
+  background:var(--teal);color:#093a30;font-size:15px;font-weight:700;cursor:pointer;
+  transition:background .15s;
+}
+.search-box button:active{background:#2fae91}
+.hint{max-width:640px;margin:14px auto 0;color:#cfe6f6;font-size:13px;text-align:center}
+.hint b{font-weight:700;color:#fff}
+
+/* 热门标签 */
+.hot{margin:16px auto 0;max-width:640px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.hot .tag{
+  border:1px solid rgba(255,255,255,.35);color:#eaf4fd;background:rgba(255,255,255,.08);
+  padding:4px 12px;border-radius:999px;font-size:12.5px;cursor:pointer;transition:background .15s;
+}
+.hot .tag:active{background:rgba(255,255,255,.22)}
+
+/* ===== 结果区 ===== */
+main{padding:28px 0 60px}
+.section-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.section-title .bar{width:5px;height:16px;background:var(--teal);border-radius:3px}
+.section-title .cnt{font-size:12px;font-weight:600;color:var(--muted)}
+
+/* 匹配列表 */
+.match-list{display:flex;flex-direction:column;gap:10px}
+.match-item{
+  background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;
+  transition:border-color .15s,box-shadow .15s;
+}
+.match-item:hover{border-color:var(--blue);box-shadow:0 4px 14px rgba(30,96,145,.1)}
+.match-item .badge{
+  flex:none;background:var(--chip);border:1px solid var(--chip-line);color:var(--blue);
+  font-size:12px;padding:3px 9px;border-radius:6px;font-weight:600;
+}
+.match-item .nm{font-size:16px;font-weight:700;color:var(--ink)}
+.match-item .kw{font-size:12px;color:var(--muted);margin-left:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46%}
+.match-item .arrow{flex:none;color:var(--blue);font-size:18px}
+
+/* 详情卡片 */
+.detail{
+  background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;
+  box-shadow:0 6px 20px rgba(18,48,78,.06);
+}
+.detail-head{
+  background:linear-gradient(120deg,var(--navy),var(--blue));color:#fff;padding:20px 22px;
+}
+.detail-head .cat{font-size:12px;background:rgba(255,255,255,.18);display:inline-block;padding:2px 10px;border-radius:999px;margin-bottom:8px}
+.detail-head h2{font-size:20px;font-weight:700}
+.detail-body{padding:8px 22px 24px}
+.sec{margin-top:22px}
+.sec h3{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sec h3 .ic{width:24px;height:24px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.sec h3 .ic svg{width:15px;height:15px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  background:var(--chip);border:1px solid var(--chip-line);color:var(--blue);
+  font-size:13.5px;padding:5px 12px;border-radius:8px;
+}
+.chip-sup{
+  background:#f8f3ea;border:1px solid #ecdfc6;color:#8a5a1d;
+  font-size:13.5px;padding:5px 12px;border-radius:8px;
+}
+.ol-list{list-style:none;counter-reset:st;display:flex;flex-direction:column;gap:12px}
+.ol-list li{
+  counter-increment:st;display:flex;gap:12px;align-items:flex-start;
+  background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 16px;
+  font-size:14.5px;line-height:1.75;color:#33475c;
+}
+.ol-list li::before{
+  content:counter(st);flex:none;width:24px;height:24px;border-radius:7px;background:var(--teal);
+  color:#093a30;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px;
+}
+.ol-list li .st-main{flex:1;min-width:0}
+.why{
+  font-size:12.5px;color:#0e7a63;background:#f4faf8;border-left:3px solid var(--teal);
+  border-radius:6px;padding:7px 11px;margin-top:9px;line-height:1.7;
+}
+.why b{color:#0b5f4d}
+.note-box{
+  background:#fff8ec;border:1px solid #f3e2bd;color:#8a5a1d;border-radius:10px;
+  padding:12px 14px;font-size:13.5px;
+}
+.note-box .nlabel{font-weight:700;color:#7a4d10}
+.eq-box{
+  background:#f2f7fb;border:1px solid var(--line);border-radius:10px;padding:12px 14px;
+  font-family:"Cambria Math","Times New Roman",serif;font-size:15px;color:#0f3c63;
+}
+.principle-box{
+  background:#f4faf8;border:1px solid #d3ebe2;border-radius:10px;padding:12px 14px;
+  font-size:13.5px;color:#1d5c4d;
+}
+/* 实操难点与风险 */
+.pit-list{display:flex;flex-direction:column;gap:8px}
+.pit{
+  display:flex;gap:10px;align-items:flex-start;font-size:13.5px;
+  background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;
+}
+.pit-tag{
+  flex:none;font-size:12px;font-weight:700;padding:2px 8px;border-radius:6px;margin-top:2px;
+}
+.t-time{background:#e8f1fb;color:#1e6091;border:1px solid #cfe0f0}
+.t-danger{background:#fdecea;color:#b02a1e;border:1px solid #f3c4bd}
+.t-trap{background:#fff3e2;color:#a35c00;border:1px solid #f0dcb8}
+.pit-txt{color:#33475c}
+.empty{
+  background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:34px 22px;text-align:center;color:var(--muted);font-size:14px;
+}
+.empty .big{font-size:30px;color:var(--teal);font-weight:700;margin-bottom:6px}
+
+/* 全部实验网格 */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.grid .cell{
+  background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 15px;cursor:pointer;
+  transition:border-color .15s,transform .08s;
+}
+.grid .cell:active{transform:translateY(1px)}
+.grid .cell:hover{border-color:var(--teal)}
+.grid .cell .t{font-size:14.5px;font-weight:700;color:var(--ink)}
+.grid .cell .c{font-size:12px;color:var(--muted);margin-top:3px}
+
+footer{color:var(--muted);font-size:12px;text-align:center;padding:26px 0 40px;line-height:1.9}
+
+/* ===== 管理后台（本地） ===== */
+.admin-fab{position:fixed;right:18px;bottom:18px;z-index:50;border:none;cursor:pointer;
+  background:var(--navy);color:#fff;font-size:14px;font-weight:600;padding:11px 18px;border-radius:999px;
+  box-shadow:0 8px 22px rgba(18,48,78,.3);font-family:inherit;transition:background .15s}
+.admin-fab:hover{background:var(--blue)}
+.gate{position:fixed;inset:0;background:rgba(18,48,78,.45);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
+.gate[hidden],.apanel[hidden]{display:none}
+.gate-box{background:#fff;border-radius:16px;padding:26px 24px;width:min(380px,100%);box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.gate-box h3{font-size:17px;color:var(--navy);margin-bottom:6px}
+.gate-tip{font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+.gate-box input{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;font-size:14px;margin-bottom:10px;outline:none;font-family:inherit}
+.gate-box input:focus{border-color:var(--blue)}
+.gate-btns{display:flex;gap:10px}
+.gate-btns .btn-primary{flex:1}
+.gate-forgot{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;margin-top:12px;text-decoration:underline;padding:0}
+.btn-primary{background:var(--teal);color:#093a30;border:none;font-weight:700;font-size:14px;padding:10px 18px;border-radius:10px;cursor:pointer;font-family:inherit}
+.btn-primary:active{background:#2fae91}
+.btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink);font-size:13.5px;padding:9px 15px;border-radius:10px;cursor:pointer;font-family:inherit}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+.btn-danger{background:#fdecea;border:1px solid #f3c4bd;color:#b02a1e;font-size:13.5px;padding:9px 15px;border-radius:10px;cursor:pointer;font-family:inherit}
+.btn-sm{font-size:12.5px;padding:6px 12px}
+.apanel{position:fixed;inset:0;background:var(--bg);z-index:90;display:flex;flex-direction:column}
+.apanel-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  background:linear-gradient(120deg,var(--navy),var(--blue));color:#fff;padding:14px 20px}
+.apanel-bar b{font-size:16px}
+.apanel-actions{display:flex;gap:8px;flex-wrap:wrap}
+.apanel-actions .btn-ghost{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3);color:#fff}
+.apanel-actions .btn-ghost:hover{border-color:#fff;color:#fff}
+.apanel-body{flex:1;display:flex;min-height:0}
+.ap-list{width:300px;flex:none;background:#fff;border-right:1px solid var(--line);overflow-y:auto;padding:12px}
+.ap-list .ap-item{padding:11px 13px;border-radius:10px;cursor:pointer;border:1px solid transparent;margin-bottom:4px}
+.ap-list .ap-item:hover{background:var(--chip)}
+.ap-list .ap-item.on{border-color:var(--teal);background:var(--teal-soft)}
+.ap-list .ap-item .t{font-size:14px;font-weight:700;color:var(--ink)}
+.ap-list .ap-item .c{font-size:12px;color:var(--muted);margin-top:2px}
+.ap-editor{flex:1;overflow-y:auto;padding:20px 24px 60px}
+.ap-empty{color:var(--muted);font-size:14px;text-align:center;padding:60px 0}
+.ap-row{margin-bottom:16px;max-width:760px}
+.ap-row label{display:block;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.ap-row input,.ap-row textarea{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:9px;font-size:13.5px;font-family:inherit;outline:none;background:#fff;color:var(--ink);line-height:1.6}
+.ap-row input:focus,.ap-row textarea:focus{border-color:var(--blue)}
+.dyn-list{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+.step-row,.pit-row{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.step-row .no{font-size:12px;font-weight:700;color:#0e7a63;margin-bottom:6px}
+.step-row textarea{margin-bottom:6px}
+.pit-row{display:flex;gap:8px;align-items:flex-start}
+.pit-row select{padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;flex:none}
+.pit-row textarea{flex:1}
+.row-del{background:none;border:none;color:#b02a1e;font-size:12px;cursor:pointer;padding:4px 6px;flex:none}
+.ap-savebar{display:flex;align-items:center;gap:10px;position:sticky;bottom:0;background:var(--bg);padding:14px 0;border-top:1px solid var(--line);max-width:760px}
+.ap-msg{font-size:12.5px;color:#0e7a63}
+/* ===== 资料上传与处理 ===== */
+.umodal{position:fixed;inset:0;background:rgba(18,48,78,.5);z-index:110;display:flex;align-items:center;justify-content:center;padding:16px}
+.umodal[hidden]{display:none}
+.ubox{background:#fff;border-radius:16px;width:min(720px,100%);max-height:92vh;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,.3);overflow:hidden}
+.ubox-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:linear-gradient(120deg,var(--navy),var(--blue));color:#fff}
+.ubox-bar b{font-size:15px}
+.ubox-bar button{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:14px}
+.ubox-body{padding:18px 20px 24px;overflow-y:auto}
+.u-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:14px;background:var(--bg);border:1px solid var(--line);border-radius:12px;margin-bottom:12px}
+.u-controls input[type=file]{font-size:13px;font-family:inherit;max-width:280px}
+.u-controls label{font-size:13px;display:flex;align-items:center;gap:5px;cursor:pointer;color:var(--ink)}
+.u-page{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.u-page input{width:56px;padding:5px 8px;border:1px solid var(--line);border-radius:7px;font-size:13px;font-family:inherit}
+.u-tip{font-size:12.5px;color:var(--muted);line-height:1.7;margin-bottom:12px}
+.u-notice{background:#fff3e2;border:1px solid #f0dcb8;border-radius:12px;padding:12px 16px;margin-bottom:12px}
+.u-notice>b{display:block;font-size:13px;font-weight:700;color:#a35c00;margin-bottom:4px}
+.u-notice ul{margin:0;padding-left:18px}
+.u-notice li{font-size:12.5px;color:#7a6537;line-height:1.85}
+.u-notice li b{color:#a35c00;font-weight:600}
+.u-log{background:#0f2f24;color:#b8f0d8;font-family:Consolas,Menlo,monospace;font-size:12px;line-height:1.8;border-radius:10px;padding:12px 14px;max-height:170px;overflow-y:auto;margin-bottom:14px;white-space:pre-wrap}
+.u-log .err{color:#ffb4a8}.u-log .warn{color:#ffd9a0}.u-log .ok{color:#8ff0c0}
+.draft-item{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:#fff}
+.draft-item .d-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.draft-item .d-head b{font-size:14.5px;color:var(--ink)}
+.d-meta{font-size:12px;color:var(--muted);background:var(--chip);border:1px solid var(--chip-line);border-radius:999px;padding:2px 10px}
+.d-miss{font-size:12px;color:#a35c00;background:#fff3e2;border:1px solid #f0dcb8;border-radius:999px;padding:2px 10px}
+.d-ok{font-size:12px;color:#0e7a63;background:var(--teal-soft);border-radius:999px;padding:2px 10px}
+.d-btns{display:flex;gap:8px}
+.u-none{color:var(--muted);font-size:13.5px;text-align:center;padding:26px 0}
+@media (max-width:720px){
+  .apanel-body{flex-direction:column}
+  .ap-list{width:100%;max-height:220px;border-right:none;border-bottom:1px solid var(--line)}
+}
+@media (max-width:500px){
+  .grid{grid-template-columns:1fr}
+  .search-box input{font-size:16px}
+  .match-item .kw{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap header-inner">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M9 4h6M9 4v5L6 15a2 2 0 0 0 1.8 3h8.4A2 2 0 0 0 18 15l-3-6V4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 13h7" stroke="#49c5a8" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+    <div>
+      <h1>化学实验学习平台</h1>
+      <p>输入实验名称，一键查看仪器、药品用量、实验步骤与实操风险</p>
+    </div>
+  </div>
+</header>
+
+<div class="search-band">
+  <div class="wrap">
+    <div class="search-box">
+      <input id="q" type="text" placeholder="例如：粗盐提纯、配制溶液、高锰酸钾制氧气…" autocomplete="off">
+      <button id="go">搜索</button>
+    </div>
+    <div class="hint">可输入实验名称或关键词，如 <b>“蒸馏”</b>、<b>“制氧气”</b>、<b>“滴定”</b></div>
+    <div class="hot" id="hot"></div>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <div id="resultArea"></div>
+    <div class="section-title" style="margin-top:34px"><span class="bar"></span>全部实验（点击查看）<span class="cnt" id="expCount"></span></div>
+    <div id="allList" class="grid"></div>
+  </div>
+</main>
+
+<footer>本平台用于学习参考 · 请在有老师指导、具备安全条件的实验室中进行实验<br>实验内容与用量依据《基础化学实验（I）——无机及分析化学实验》（第二版）整理</footer>
+
+<!-- ===== 管理后台入口 ===== -->
+<button id="adminBtn" class="admin-fab" type="button">⚙ 管理实验</button>
+
+<div id="adminGate" class="gate" hidden>
+  <div class="gate-box">
+    <h3 id="gateTitle">管理员口令</h3>
+    <p class="gate-tip" id="gateTip"></p>
+    <input id="gatePwd" type="password" placeholder="输入口令">
+    <input id="gatePwd2" type="password" placeholder="再次输入口令" hidden>
+    <div class="gate-btns">
+      <button id="gateOk" class="btn-primary" type="button">进入</button>
+      <button id="gateCancel" class="btn-ghost" type="button">取消</button>
+    </div>
+    <button id="gateForgot" class="gate-forgot" type="button">忘记口令？重置</button>
+  </div>
+</div>
+
+<div id="adminPanel" class="apanel" hidden>
+  <div class="apanel-bar">
+    <b>实验管理后台</b>
+    <span class="apanel-actions">
+      <button id="apNew" class="btn-primary" type="button">＋ 新建实验</button>
+      <button id="apUpload" class="btn-ghost" type="button">上传资料</button>
+      <button id="apExport" class="btn-ghost" type="button">导出 JSON</button>
+      <button id="apImport" class="btn-ghost" type="button">导入 JSON</button>
+      <input id="apImportFile" type="file" accept=".json,application/json" hidden>
+      <button id="apPwd" class="btn-ghost" type="button">修改口令</button>
+      <button id="apClose" class="btn-ghost" type="button">退出管理</button>
+    </span>
+  </div>
+  <div class="apanel-body">
+    <div class="ap-list" id="apList"></div>
+    <div class="ap-editor">
+      <div class="ap-empty" id="apEmpty">从左侧选择一个实验进行编辑，或点击「新建实验」。<br>所有改动自动保存在本浏览器本地，可通过「导出 JSON」备份。</div>
+      <form id="apForm" hidden>
+        <div class="ap-row"><label>实验名称</label><input id="f_name" placeholder="如：粗盐提纯"></div>
+        <div class="ap-row"><label>分类</label><input id="f_category" placeholder="如：基本操作 · 除杂提纯"></div>
+        <div class="ap-row"><label>关键词（逗号分隔，用于搜索）</label><input id="f_keywords" placeholder="如：粗盐,提纯,除杂,NaCl"></div>
+        <div class="ap-row"><label>所需仪器（每行一个）</label><textarea id="f_instruments" rows="4" placeholder="烧杯(100mL)&#10;玻璃棒"></textarea></div>
+        <div class="ap-row"><label>所需药品/试剂（每行一个，标注用量）</label><textarea id="f_materials" rows="5" placeholder="粗盐 7.5g&#10;蒸馏水 25mL"></textarea></div>
+        <div class="ap-row"><label>实验用品/耗材（每行一个，可留空）</label><textarea id="f_supplies" rows="3" placeholder="滤纸&#10;pH试纸"></textarea></div>
+        <div class="ap-row"><label>实验原理与用量核算（可留空）</label><textarea id="f_principle" rows="4"></textarea></div>
+        <div class="ap-row"><label>实验步骤与操作反思</label>
+          <div id="f_steps" class="dyn-list"></div>
+          <button id="f_addStep" class="btn-ghost btn-sm" type="button">＋ 添加步骤</button>
+        </div>
+        <div class="ap-row"><label>化学方程式 / 关键关系（可留空）</label><textarea id="f_equation" rows="2"></textarea></div>
+        <div class="ap-row"><label>实操难点与风险</label>
+          <div id="f_pits" class="dyn-list"></div>
+          <button id="f_addPit" class="btn-ghost btn-sm" type="button">＋ 添加难点</button>
+        </div>
+        <div class="ap-row"><label>注意事项（可留空）</label><textarea id="f_note" rows="3"></textarea></div>
+        <div class="ap-savebar">
+          <button id="f_save" class="btn-primary" type="submit">保存</button>
+          <button id="f_delete" class="btn-danger" type="button" hidden>删除此实验</button>
+          <span id="f_msg" class="ap-msg"></span>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 资料上传与自动抽取 ===== -->
+<div id="uploadModal" class="umodal" hidden>
+  <div class="ubox">
+    <div class="ubox-bar">
+      <b>上传资料 · 自动抽取实验草稿</b>
+      <button id="uClose" type="button" title="关闭">✕</button>
+    </div>
+    <div class="ubox-body">
+      <div class="u-controls">
+        <input id="uFile" type="file" accept=".txt,.pdf">
+        <label><input id="uModeText" type="radio" name="uMode" value="text" checked>文字版 PDF / TXT</label>
+        <label><input id="uModeOcr" type="radio" name="uMode" value="ocr">扫描版 PDF（OCR）</label>
+        <span class="u-page">页码 <input id="uFrom" type="number" min="1" placeholder="1"> ~ <input id="uTo" type="number" min="1" placeholder="末页"></span>
+        <button id="uStart" class="btn-primary" type="button">开始抽取</button>
+      </div>
+      <div class="u-notice">
+        <b>⚠ 使用提醒</b>
+        <ul>
+          <li>支持 .txt / .pdf：文字版直接读取文字层，扫描版走 OCR 识别；全部处理在本机浏览器内完成，<b>文件不会上传</b>。</li>
+          <li>抽取库从 CDN 按需加载，<b>首次使用需联网</b>；同一浏览器内会缓存，后续无需重复下载。</li>
+          <li>OCR 模式首次需下载约 <b>15MB 中文识别库</b>，耗时较长，建议先限定页码范围再抽取。</li>
+          <li>OCR 存在字符级识别误差（如 l→1、O→0），抽取后请以草稿上的<b>「待补充」徽章</b>为线索人工核对，补全「为什么」与风险点后再保存。</li>
+        </ul>
+      </div>
+      <div id="uLog" class="u-log" hidden></div>
+      <div id="uResult"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============ 内置实验数据库 ============
+// 字段说明：
+//   instruments 仪器（可重复使用的实验设备，如烧杯、试管、天平等）
+//   materials   药品/试剂（化学反应所需的物质，均标注用量）
+//   supplies    实验用品/耗材（一次性消耗品，如滤纸、试纸、火柴等）
+//   steps       实验步骤，每步附 w 字段说明“为什么这样做”
+var SEED_EXPERIMENTS = [
+  {
+    name:"粗盐提纯",
+    keywords:["粗盐","提纯","除杂","氯化钠","NaCl","蒸发","结晶"],
+    category:"基本操作 · 除杂提纯",
+    instruments:["台秤(0.1g)","电磁加热搅拌器(或酒精灯)","烧杯(100mL)","玻璃棒","量筒(25mL)","普通漏斗","布氏漏斗","抽滤瓶","循环水泵","蒸发皿","坩埚钳","石棉网","试管(检验用)"],
+    supplies:["滤纸","pH试纸"],
+    materials:["粗盐 7.5g","蒸馏水 25mL","BaCl₂溶液(1mol/L) 约3mL（沉淀SO₄²⁻）","BaCl₂溶液(0.2mol/L) 3~4滴（检验SO₄²⁻用）","Na₂CO₃饱和溶液 约6mL","HCl(6mol/L) 数滴（调酸度）","HCl(1mol/L) 数滴（检查SO₄²⁻除尽）","NaOH溶液(6mol/L) 4~6滴（检验Mg²⁺用）","HAc溶液(2mol/L) 数滴（检验Ca²⁺时酸化）","(NH₄)₂C₂O₄饱和溶液 3~4滴（检验Ca²⁺）","镁试剂Ⅰ（对硝基苯偶氮间苯二酚）3~4滴（检验Mg²⁺）","H₂SO₄溶液(3mol/L、1mol/L)（教材所列）","乙醇与水按2:1的混合液 少许（洗涤晶体）"],
+    principle:"粗盐中含Ca²⁺、Mg²⁺、SO₄²⁻及不溶性泥沙。先加稍过量的BaCl₂沉淀SO₄²⁻；再加入饱和Na₂CO₃溶液，利用CO₃²⁻同时沉淀Ca²⁺、Mg²⁺（生成碱式碳酸镁）和过量的Ba²⁺；过滤后用6mol/L盐酸将溶液调至微酸性(pH 3~4)，除去过量的CO₃²⁻（过量盐酸在后续蒸发中挥发）；最后蒸发浓缩、冷却结晶得精盐。用量核算：7.5g粗盐(约0.13mol)中SO₄²⁻一般不足1mmol，1mol/L BaCl₂溶液2~3mL(2~3mmol)即可沉淀完全并过量；饱和Na₂CO₃溶液(约2mol/L)5~6mL含Na₂CO₃约10~12mmol，足以沉淀Ca²⁺、Mg²⁺及过量的Ba²⁺。",
+    steps:[
+      {s:"用台秤称取7.5g粗盐，放入100mL烧杯，加25mL蒸馏水，加热并搅拌使其溶解。",w:"适当加热和搅拌可加快溶解速度。水量不宜过多（否则后续蒸发耗时太长），也不宜过少（否则杂质离子可能提前达到饱和而析出，混入产品）。"},
+      {s:"除SO₄²⁻：加热溶液至沸，边搅拌边滴加1mol/L BaCl₂溶液约2~3mL，继续加热5分钟。",w:"Ba²⁺与SO₄²⁻生成难溶的BaSO₄沉淀。加热并搅拌可使沉淀颗粒长大，既易于沉降也便于过滤。必须先除SO₄²⁻，因为这一步要加入过量的Ba²⁺，而过量的Ba²⁺要靠后面的Na₂CO₃来除去。"},
+      {s:"检查SO₄²⁻是否除尽：移开热源，待沉降后取少量上清液，加几滴6mol/L HCl和几滴1mol/L BaCl₂溶液，如有混浊则补加BaCl₂直至除尽。",w:"沉淀剂必须过量杂质才能除尽，但过量多少无法目测，所以要取上层清液“再滴一次沉淀剂”来检验。加酸是为了防止溶液中的CO₃²⁻等与Ba²⁺生成沉淀而造成误判。"},
+      {s:"除Ca²⁺、Mg²⁺和过量的Ba²⁺：将溶液加热至沸，边搅拌边滴加饱和Na₂CO₃溶液约5~6mL，至不再生成沉淀为止，再多加0.5mL，静置。",w:"CO₃²⁻可把Ca²⁺、过量的Ba²⁺沉淀为CaCO₃、BaCO₃，Mg²⁺则沉淀为碱式碳酸镁。用饱和溶液而不用稀溶液，是为了减少加入体积、避免溶液被过度稀释；“再多加0.5mL”是保证沉淀剂稍过量。"},
+      {s:"检查Ba²⁺是否除尽：取上清液滴加几滴饱和Na₂CO₃溶液，如不再产生沉淀表明已除尽。",w:"与SO₄²⁻的检验思路相同：确认沉淀剂已过量、杂质已除尽，避免Ba²⁺残留使产品混入钡盐（钡盐有毒）。"},
+      {s:"调酸度：在加热搅拌下滴加6mol/L HCl，中和至溶液呈微酸性(pH约3~4)。",w:"中和过量的CO₃²⁻——若CO₃²⁻不除尽，蒸发时会产生大量CO₂造成溶液外溅，产品中也会混入Na₂CO₃。保留微酸性是因为过量的盐酸在蒸发过程中会挥发除去；若调至中性，反而难以判断CO₃²⁻是否已除尽。"},
+      {s:"浓缩与结晶：常压过滤后，将滤液倒入蒸发皿，浓缩至原体积的1/3（表面出现一层晶膜），冷却结晶。",w:"NaCl的溶解度受温度影响很小，所以用蒸发浓缩（而不是冷却）的方法提高浓度使其析出。浓缩至出现晶膜即停止，是利用余热蒸干剩余水分——蒸得太干固体会飞溅，浓缩不足则产量低。"},
+      {s:"用布氏漏斗减压抽滤，用少量2:1酒精水溶液洗涤晶体，抽干后小火烘干，得精盐，称量并计算产率。",w:"减压过滤速度快、得到的固体较干燥。用酒精水溶液而不用纯水洗涤，是因为NaCl在酒精水溶液中溶解度更小，可减少产品损失，同时酒精易挥发、便于干燥。"},
+      {s:"产品纯度检验（与粗盐对照）：取粗盐和精盐各0.5g分别溶于约5mL蒸馏水——①硫酸根：各加2滴6mol/L HCl和3~4滴0.2mol/L BaCl₂溶液，比较混浊程度；②钙离子：各加2mol/L HAc酸化，再加3~4滴饱和草酸铵溶液；③镁离子：各加4~6滴6mol/L NaOH溶液，再加3~4滴镁试剂Ⅰ溶液（出现蓝色絮状沉淀表明含Mg²⁺）。",w:"用“粗盐—精盐”对照实验比较沉淀生成的多少，可直观判断提纯效果。三种杂质用不同试剂和条件检验，是因为各离子的特征反应要求不同介质：SO₄²⁻用BaCl₂在酸性中检验；Ca²⁺用草酸铵在酸性中检验（防止CO₃²⁻干扰）；Mg²⁺用镁试剂Ⅰ在碱性中检验。"}
+    ],
+    equation:"Ba²⁺+SO₄²⁻=BaSO₄↓；Ca²⁺+CO₃²⁻=CaCO₃↓；Ba²⁺+CO₃²⁻=BaCO₃↓；2Mg²⁺+2OH⁻+CO₃²⁻=Mg₂(OH)₂CO₃↓；2H⁺+CO₃²⁻=H₂O+CO₂↑",
+    pitfalls:[
+      {t:"耗时",x:"溶解约10分钟；三步沉淀反应各需煮沸数分钟；常压过滤一遍约5~10分钟；蒸发和冷却结晶需20分钟以上。全流程约1.5个课时，是最考验耐心的基本操作之一。"},
+      {t:"危险",x:"蒸发皿、三脚架、酒精灯温度很高，取放必须使用坩埚钳，热的蒸发皿不能直接放在实验台上，应垫石棉网；减压过滤时抽滤瓶口不要对着人；酸碱废液中和后倾倒。"},
+      {t:"易错",x:"沉淀剂必须过量并检验沉淀是否除尽；蒸发时玻璃棒要不停地搅拌，出现较多固体即停火并用余热蒸干，蒸得太干固体会飞溅；BaCl₂必须在Na₂CO₃之前加入，否则过量的Ba²⁺无法除去；盐酸调至微酸性即可，不能调至中性。"}
+    ],
+    note:"除杂顺序：BaCl₂→饱和Na₂CO₃→盐酸。Na₂CO₃必须加在BaCl₂之后，用于同时除去Ca²⁺、Mg²⁺和过量的Ba²⁺；每次加沉淀剂后都要检查是否除尽；盐酸调至pH 3~4（微酸性），过量部分在蒸发时挥发。"
+  },
+  {
+    name:"配制一定物质的量浓度的溶液",
+    keywords:["配制","物质的量","容量瓶","定容","溶液","摩尔","非标准溶液"],
+    category:"基本操作 · 溶液配制",
+    instruments:["分析天平(或托盘天平)","药匙","烧杯(100mL)","玻璃棒","量筒","容量瓶(100mL)","胶头滴管","试剂瓶(带标签)","洗瓶"],
+    supplies:["标签纸"],
+    materials:["NaCl（配制100mL 0.100mol/L溶液需0.585g）","NaOH(固体) 2.0g（配500mL 0.1mol/L溶液用）","浓盐酸(约12mol/L) 4.2mL（配500mL 0.1mol/L HCl用）","浓硫酸(约18mol/L) 约2.8mL（配500mL 0.1mol/L H₂SO₄用）","HNO₃(0.5mol/L) 3mL（介质水溶法用）","SnCl₂·2H₂O(固体) 2.3g（配100mL 0.1mol/L SnCl₂溶液）","Pb(NO₃)₂(固体) 0.3g、Bi(NO₃)₃·5H₂O(固体) 0.5g（配Pb²⁺、Bi³⁺各约0.01mol/L混合液）","锡粒（防止Sn²⁺氧化）","去污粉、洗液(铬酸洗液)、乙醇(CP)（仪器洗涤用）","蒸馏水"],
+    principle:"溶液配制有三种常用方法（教材第一篇）：①直接水溶法——易溶于水且不水解的固体（如KNO₃、NaCl），称量后溶于水再稀释至所需体积；②介质水溶法——易水解的固体（如FeCl₃、SbCl₃、SnCl₂、Bi(NO₃)₃），先用适量酸（或碱）溶解再稀释，Sn²⁺、Fe²⁺溶液中还应放入锡粒或铁粉防止氧化；③稀释法——液态试剂（如浓盐酸、浓硫酸）量取后加水稀释，稀释浓硫酸时必须“酸入水”并不断搅拌。用量核算：500mL 0.1mol/L NaOH需NaOH 2.0g；500mL 0.1mol/L HCl需浓盐酸(12mol/L)4.2mL；500mL 0.1mol/L H₂SO₄需浓硫酸(18mol/L)约2.8mL。标准溶液则用基准试剂直接配制，或先配近似浓度再用基准试剂标定。",
+    steps:[
+      {s:"计算：按c·V·M算出所需溶质的质量（固体）或浓溶液的体积（液体），写在记录本上。",w:"配制的前提是准确知道溶质的物质的量。固体用“质量=浓度×体积×摩尔质量”换算，液体用“稀释前后物质的量不变(c₁V₁=c₂V₂)”换算，两类试剂的算法不同。"},
+      {s:"称量或量取：固体用天平称量（NaOH等腐蚀性、易潮解药品应放在小烧杯中快速称量，不能放在纸上，也不能直接用手拿）；液体用量筒或移液管量取。",w:"NaOH易潮解、有腐蚀性，放在纸上会吸收水分并腐蚀纸张，导致称量不准且危险；配制非标准溶液对精度要求不苛刻，所以液体试剂量取用量筒即可（配制标准溶液时才需要用移液管）。"},
+      {s:"溶解/稀释（按试剂性质选择方法）：直接水溶法——如NaCl溶于适量水；稀释法——浓酸沿烧杯壁缓慢加入水中并不断搅拌；介质水溶法——如配100mL 0.1mol/L SnCl₂溶液，将2.3g SnCl₂·2H₂O溶于4mL浓盐酸，再加水稀释至100mL，加少许锡粒。",w:"易水解的盐（SnCl₂、FeCl₃、Bi(NO₃)₃）直接溶于水会生成沉淀或浑浊，先用相应的酸溶解可抑制水解；稀释浓硫酸必须“酸入水”，是因为浓硫酸密度大且稀释放热剧烈，若水入酸，水会浮在表面沸腾并带着酸液飞溅。"},
+      {s:"转移：待溶液冷却至室温后，沿玻璃棒小心转入容量瓶（或试剂瓶）。",w:"热溶液体积偏大，冷却后体积缩小，会导致所配溶液浓度偏高；容量瓶是量出式精密仪器，不能受热，也不能用来溶解固体，所以必须先在烧杯中溶解并冷却。"},
+      {s:"洗涤：用少量蒸馏水洗涤烧杯内壁和玻璃棒2~3次，洗涤液一并转入容量瓶。",w:"烧杯内壁和玻璃棒上沾有溶质，不洗涤会造成溶质损失、所配溶液浓度偏低；洗涤次数太少同样有损失，所以规定为2~3次。"},
+      {s:"定容：加水至液面距刻度线1~2cm处，改用胶头滴管逐滴加水，至凹液面最低处与刻度线相切。",w:"距刻度线较远时直接加水即可，接近时若仍直接倾倒很容易加过刻度线导致前功尽弃，改用滴管便于精确控制最后少量体积；容量瓶读数以凹液面最低处为准（水分子间有内聚力，形成凹液面）。"},
+      {s:"摇匀：盖好瓶塞，用食指顶住瓶塞、拇指和中指掐住瓶颈，反复颠倒摇匀。",w:"容量瓶不能振荡（液体会溅出），颠倒摇匀既能混匀又不损失；摇匀后液面略低于刻度线是正常现象（有液体附在瓶壁上），此时绝不能再补水，否则浓度偏低。"},
+      {s:"贴标签：转入洁净干燥的试剂瓶，注明名称、浓度和配制日期；见光易分解的溶液（如AgNO₃、KMnO₄）应贮于棕色瓶。",w:"标签是实验室安全的基本要求，可防止误用；见光易分解的试剂用棕色瓶避光保存。"}
+    ],
+    equation:"c = n/V = m/(M·V)；配制100mL 0.100mol/L NaCl溶液需NaCl 0.585g；配制500mL 0.1mol/L溶液分别需：NaOH 2.0g、浓盐酸4.2mL、浓硫酸约2.8mL",
+    pitfalls:[
+      {t:"耗时",x:"溶解后必须冷却至室温才能转移定容，热溶液定容会因热胀冷缩导致浓度偏高，等待冷却常被忽视而拖慢进度；洗涤烧杯和玻璃棒2~3次并全部转入，操作慢时容易遗漏。"},
+      {t:"危险",x:"称量NaOH等腐蚀性药品要迅速（易吸湿粘结），不能用手接触；稀释浓酸时切记“酸入水、沿器壁、慢慢倒、不断搅”；铬酸洗液有强腐蚀性且含高价铬（有毒），使用时须戴手套、避免接触皮肤；容量瓶为薄壁玻璃仪器，严禁加热。"},
+      {t:"易错",x:"定容时仰视刻度线会使浓度偏低、俯视则偏高；摇匀后液面低于刻度线是正常现象，绝不能再补水；容量瓶使用前要检查瓶塞是否漏液，瓶塞与瓶身要配套；转移时不用玻璃棒引流容易洒到瓶外。"}
+    ],
+    note:"容量瓶、移液管、滴定管都是量出式仪器，使用前要洗净并检漏；配好的溶液应转入试剂瓶贴标签保存，容量瓶不作储存容器。配制方法要按试剂性质选择：直接水溶、介质水溶或稀释。"
+  },
+  {
+    name:"高锰酸钾制取氧气",
+    keywords:["高锰酸钾","制氧气","氧气","KMnO4","排水法","分解"],
+    category:"气体的实验室制取",
+    instruments:["铁架台(带铁夹)","酒精灯","大试管(带单孔塞)","导管","水槽","集气瓶(250mL)","玻璃片"],
+    supplies:["棉花","火柴","带火星的木条"],
+    materials:["高锰酸钾(KMnO₄，固体) 约5g","水槽用水 适量"],
+    principle:"2KMnO₄ ≜ K₂MnO₄ + MnO₂ + O₂↑。固体加热型装置，试管口应略向下倾斜，防止冷凝水倒流使试管炸裂；试管口塞一团棉花，防止KMnO₄粉末随氧气流进入导管。用量核算：5g KMnO₄(0.032mol)理论上可生成O₂约0.016mol，标准状况下约360mL（20℃时约390mL），可收集2~3瓶250mL集气瓶。",
+    steps:[
+      {s:"检查装置气密性：将导管一端浸入水中，用手紧握试管，导管口有气泡冒出、松手后导管内形成一段水柱，则气密性良好。",w:"装置漏气会导致收集不到气体或收集的气体不纯；这是任何气体制备实验前的必需步骤。手握试管使管内气体受热膨胀，若漏气则观察不到气泡和水柱。"},
+      {s:"在试管口塞一团棉花，用药匙向试管中加入约5g KMnO₄，平铺于试管底部。",w:"棉花可阻挡加热时飞溅的KMnO₄粉末进入导管（粉末会使水槽中的水变紫红色，还可能堵塞导管）；把药品平铺是为了增大受热面积，使反应平稳、持续产生氧气。"},
+      {s:"将试管口略向下倾斜，用铁夹固定在铁架台上（夹在距试管口约1/3处）。",w:"固体加热时会产生水蒸气，在试管口处冷凝成液态水；若管口向上，冷凝水倒流回炽热的试管底部会导致试管炸裂，略向下倾斜可让冷凝水流出。铁夹夹在中上部是防止试管晃动且不烫坏夹子。"},
+      {s:"点燃酒精灯，先来回移动使试管均匀预热，再集中加热药品部位。",w:"直接集中加热会造成试管局部温差过大而炸裂；预热使试管均匀受热后，再集中加热提高反应温度。"},
+      {s:"刚开始冒出的气泡不要收集；待导管口有连续均匀的气泡冒出时，将导管伸入集气瓶，用排水法收集。",w:"刚开始冒出的气泡是装置内的空气，立即收集会导致氧气不纯；连续均匀的气泡说明空气已排尽、气流平稳，此时收集的气体才较纯净。"},
+      {s:"当集气瓶口有大气泡向外冒出时说明已集满，在水面下用玻璃片盖住瓶口，取出正放在桌面上。",w:"排水法收集满的标志是瓶口有气泡向外冒出；在水面下盖玻璃片可防止空气进入瓶内；氧气密度比空气大，所以集满后要正放（瓶口向上）。"},
+      {s:"实验结束，先把导管移出水面，再熄灭酒精灯。",w:"若先熄灯，试管内温度下降、气压减小，水槽中的水会倒吸入热试管，导致试管炸裂（倒吸）。先移管后熄灯可避免这一事故。"},
+      {s:"将带火星的木条放在集气瓶口，木条复燃，证明氧气已集满。",w:"氧气能支持燃烧，可使带火星的木条复燃，这是氧气的特征检验方法；验满时木条要放在瓶口（瓶内已充满的标志），而不是伸入瓶中。"}
+    ],
+    equation:"2KMnO₄ ≜ K₂MnO₄ + MnO₂ + O₂↑",
+    pitfalls:[
+      {t:"耗时",x:"装置搭建与气密性检查约10分钟；预热到连续均匀冒气泡约3~5分钟；每瓶收集1~2分钟；加上拆卸和洗涤，总耗时约25~30分钟。"},
+      {t:"危险",x:"试管口必须略向下倾斜，否则反应生成的水蒸气在管口冷凝倒流，会使试管炸裂；结束时一定要先把导管移出水面再熄灭酒精灯，防止水倒吸入热试管引起炸裂；加热时试管不要碰到酒精灯灯芯（玻璃受热不均易炸裂）。"},
+      {t:"易错",x:"忘记塞棉花或棉花塞得太松，KMnO₄粉末会进入导管并把水槽中的水染成紫红色；未预热就直接集中加热，试管容易炸裂；导管一有气泡就收集，得到的氧气混有空气而不纯；铁夹应夹在试管中上部。"}
+    ],
+    note:"这是典型的“固体加热型”制气装置，与制氢气、二氧化碳的“固液常温型”装置形成对比；实验室还可用氯酸钾(加MnO₂催化)或过氧化氢(加MnO₂)制氧气。"
+  },
+  {
+    name:"二氧化碳的实验室制取",
+    keywords:["二氧化碳","制CO2","制二氧化碳","石灰石","大理石","气体"],
+    category:"气体的实验室制取",
+    instruments:["锥形瓶(或大试管)","长颈漏斗","双孔橡皮塞","导管","集气瓶(250mL)","玻璃片","铁架台"],
+    supplies:["燃着的木条（验满用）"],
+    materials:["石灰石(或大理石，块状) 约15g","稀盐酸(约6mol/L) 约60mL"],
+    principle:"CaCO₃ + 2HCl = CaCl₂ + H₂O + CO₂↑。CO₂密度比空气大且能溶于水，故用向上排空气法收集。用量核算：15g石灰石(约0.15mol)完全反应可生成CO₂约3.4L（标准状况），足够收集十余瓶250mL集气瓶。药品选择有讲究：不用稀硫酸（生成的CaSO₄微溶，覆盖在石灰石表面阻止反应继续进行）；不用浓盐酸（挥发出的HCl使CO₂不纯）；不用Na₂CO₃粉末（反应太快不易控制）。",
+    steps:[
+      {s:"检查装置气密性。",w:"防止气体从缝隙逸出导致收集不到或收集缓慢；这是固液常温制气装置使用前的必需步骤。"},
+      {s:"向锥形瓶中放入约15g块状石灰石。",w:"块状固体与液体在常温下反应，是最温和、最易控制的制气组合；粉末状固体反应过快难以控制，还会从有孔塑料板（或启普发生器）的孔中漏下与酸持续反应。"},
+      {s:"塞紧双孔塞，从长颈漏斗缓慢注入约60mL稀盐酸，漏斗下端必须伸入液面以下形成液封。",w:"形成液封是为了防止生成的CO₂从漏斗口向上逸出而收集不到；稀盐酸与CaCO₃反应速率适中，便于控制和收集。"},
+      {s:"待气泡连续均匀冒出后（开始排出的是装置内的空气），将导管伸入集气瓶底部，用向上排空气法收集。",w:"开始排出的是装置内的空气，需先排尽；CO₂密度比空气大且能溶于水，所以用向上排空气法（瓶口向上）而不用排水法；导管伸到集气瓶底部，有利于把密度较小的空气从瓶口完全排出。"},
+      {s:"将燃着的木条放在集气瓶口，若木条熄灭，说明已收集满。",w:"CO₂不支持燃烧；把燃着的木条放在瓶口（不伸入瓶中），木条熄灭说明瓶口处已充满CO₂，这是CO₂的验满方法。"},
+      {s:"实验完毕，将废酸液倒入指定回收容器，石灰石洗净晾干。",w:"酸性废液直接倒入水槽会腐蚀管道；石灰石并未消耗完，洗净晾干后可重复使用，节约药品。"}
+    ],
+    equation:"CaCO₃ + 2HCl = CaCl₂ + H₂O + CO₂↑",
+    pitfalls:[
+      {t:"耗时",x:"排空气法收集速度慢，集满一瓶250mL CO₂约需1~2分钟，且导管必须伸到集气瓶底部才能把空气排尽；若要连续收集多瓶，总耗时明显增加。"},
+      {t:"危险",x:"稀盐酸有腐蚀性，注入速度要慢；长颈漏斗下端若未插入液面形成液封，CO₂会从漏斗口逸出而收集不到气体；反应剧烈时酸液泡沫可能冲出，锥形瓶内液体体积不要超过1/3。"},
+      {t:"易错",x:"导管伸入锥形瓶内只需稍露出橡皮塞即可（过长不利于排气）；用燃着的木条验满时要放在瓶口而不是插入瓶中；反应结束后要及时将石灰石与酸液分离（可用带孔塑料板或铜丝兜将石灰石提起），否则反应持续进行浪费药品。"}
+    ],
+    note:"该“固液常温型”装置还适用于锌粒制氢气、过氧化氢制氧气等；把长颈漏斗换成分液漏斗，可通过控制活塞来随时控制反应的发生与停止。"
+  },
+  {
+    name:"氢气的实验室制取",
+    keywords:["氢气","制氢气","锌","稀硫酸","置换","气体"],
+    category:"气体的实验室制取",
+    instruments:["锥形瓶(或启普发生器)","长颈漏斗","双孔橡皮塞","导管","试管","水槽","坩埚钳"],
+    supplies:["火柴（点燃/验纯用）"],
+    materials:["锌粒(粒状) 约6g","稀硫酸(约3mol/L) 约40mL（或稀盐酸）"],
+    principle:"Zn + H₂SO₄ = ZnSO₄ + H₂↑（也可用Zn+2HCl=ZnCl₂+H₂↑）。氢气密度比空气小且难溶于水，可用排水法（气体较纯）或向下排空气法收集。用量核算：6g锌粒(约0.09mol)与40mL 3mol/L稀硫酸(0.12mol)完全反应，可生成氢气约0.09mol，标准状况下约2L。氢气与空气混合(体积分数4%~74.2%)遇火会爆炸，点燃前必须验纯。",
+    steps:[
+      {s:"检查装置气密性。",w:"防止氢气从缝隙逸出导致收集不到；氢气密度小、易泄漏，气密性要求比其他气体制备更高。"},
+      {s:"向锥形瓶中加入约6g锌粒，塞紧双孔塞，从长颈漏斗注入约40mL稀硫酸（漏斗下端插入液面以下）。",w:"锌粒（块状）与稀硫酸在常温下反应，速率适中。用稀硫酸而不用浓硫酸——浓硫酸会使锌表面钝化，且其还原产物含SO₂等杂质使气体不纯；液封防止氢气从漏斗口逸出。"},
+      {s:"用排水法收集一试管氢气：试管装满水倒置在水槽中，待气泡连续均匀冒出时开始收集。",w:"氢气难溶于水，排水法收集的气体比排空气法纯净；试管装满水倒置，氢气上升将水排出。刚开始的气泡是装置内的空气，不宜立即收集。"},
+      {s:"验纯：用拇指堵住试管口，将管口移近酒精灯火焰，移开拇指点火。若只听到轻微的“噗”声，表明氢气已较纯；若发出尖锐的爆鸣声，表明不纯，需另换试管重新收集、重新验纯，直至纯净。",w:"氢气与空气混合点燃会发生爆炸，所以点燃前必须验纯。纯净的氢气在管口安静燃烧发出轻微“噗”声；若混有空气，氢气在极小空间内急速燃烧放热使气体体积急剧膨胀，产生尖锐爆鸣甚至爆炸——爆鸣声的大小反映了混入空气的多少。"},
+      {s:"验纯后用向下排空气法（试管口向下）继续收集氢气。",w:"氢气密度比空气小，试管口向下时氢气上升聚集在试管底部，把空气向下排出；取出前要先堵住管口，防止氢气逸出。"},
+      {s:"实验结束，将废酸液倒入指定容器回收，锌粒洗净晾干。",w:"回收未反应的锌粒和酸液，节约药品、减少污染。"}
+    ],
+    equation:"Zn + H₂SO₄ = ZnSO₄ + H₂↑；Zn + 2HCl = ZnCl₂ + H₂↑",
+    pitfalls:[
+      {t:"耗时",x:"反应本身很快，但每一次点燃或收集前都必须验纯，这是不能省略的步骤；用向下排空气法收集时要先堵住管口再取出，操作比排水法更容易混入空气。"},
+      {t:"危险",x:"氢气与空气混合点燃可能发生爆炸，产生氢气的装置必须远离明火，尾气应点燃处理或导出室外；未经验纯的氢气绝对不能点燃；稀酸有腐蚀性，溅出后立即用水冲洗。"},
+      {t:"易错",x:"用锌粒而不要用锌粉（粉末反应过快难以控制）；验纯时试管口不能对着人；收集满氢气的试管应倒放在桌面上（氢气比空气轻）；导管一开始排出的气泡是装置内的空气，不要立即收集；长颈漏斗下端要液封，防止氢气从漏斗口逸出。"}
+    ],
+    note:"启普发生器适用于块状固体与液体在常温下反应、且生成的气体难溶于水的场合（如H₂、CO₂），可随时控制反应的发生和停止，但不能用于粉末状固体或剧烈放热的反应。"
+  },
+  {
+    name:"过滤操作",
+    keywords:["过滤","分离","不溶物","滤纸","抽滤"],
+    category:"基本操作 · 分离提纯",
+    instruments:["铁架台(带铁圈)","漏斗","烧杯(100mL)","玻璃棒","洗瓶"],
+    supplies:["滤纸"],
+    materials:["待过滤液体（如100mL粗盐水或含泥沙的浊液）","蒸馏水（洗涤用）"],
+    principle:"过滤用于分离不溶性固体与液体，是化学实验最常用的基本操作之一。滤纸按孔隙大小分为快速、中速、慢速三种，按用途分为定性和定量两种。滤纸不能过滤胶体、强酸、强碱和强氧化性溶液（会腐蚀滤纸），后者应使用玻璃砂芯漏斗。",
+    steps:[
+      {s:"折叠滤纸：将圆形滤纸对折两次成扇形，展开呈圆锥形放入漏斗，滤纸边缘应略低于漏斗边缘。",w:"圆锥形滤纸与漏斗贴合后，中间只叠一层、两边为三层，过滤时液体主要从三层一侧流下，流速适中且不易被冲破。滤纸边缘低于漏斗边缘，是为了防止液体从滤纸与漏斗壁之间的空隙直接流下（未经过滤）。"},
+      {s:"用洗瓶吹入少量蒸馏水润湿滤纸，用玻璃棒轻压，使滤纸紧贴漏斗内壁，不留气泡。",w:"滤纸紧贴漏斗壁能形成连续的液柱，靠大气压的支撑使过滤连续进行；若滤纸与漏斗壁之间留有气泡，气泡会阻断液柱，导致过滤速度明显变慢甚至中止。"},
+      {s:"将漏斗固定在铁架台的铁圈上，漏斗下端管口紧靠烧杯内壁。",w:"漏斗下端紧靠烧杯内壁，可防止滤液下滴时飞溅，并让滤液沿器壁缓缓流下。"},
+      {s:"将待过滤液体沿玻璃棒缓慢倒入漏斗：玻璃棒下端轻靠在三层滤纸一侧，液面要始终低于滤纸边缘。",w:"玻璃棒引流可防止液体直接倒入漏斗时冲破滤纸或向外飞溅；玻璃棒靠在三层滤纸处，是因为单层处强度低、容易被戳破；液面低于滤纸边缘是为了防止液体从滤纸上方“绕流”而不过滤。"},
+      {s:"过滤完毕后，用少量蒸馏水洗涤烧杯和玻璃棒2~3次，洗涤液一并过滤；再向滤渣上加少量水洗涤。",w:"滤纸上残留的滤渣微粒之间混有含产品的母液，洗涤可减少产品损失；洗涤烧杯和玻璃棒是防止溶质沾附在器壁上造成损失。洗涤液必须一并过滤，否则产品随洗涤液流失。"}
+    ],
+    equation:"—（物理分离操作，无化学反应）",
+    pitfalls:[
+      {t:"耗时",x:"折叠和贴合滤纸需要耐心，若滤纸与漏斗壁之间留有气泡，过滤速度会明显变慢甚至中止；洗涤2~3次是保证产率的关键，但每次洗涤和过滤都要花时间。"},
+      {t:"危险",x:"过滤热溶液要防烫伤，并应使用热漏斗（蒸汽夹套保温）防止溶液提前结晶析出；减压过滤（抽滤）时布氏漏斗下端的斜口应朝向吸滤瓶的支管口，且吸滤瓶不要对着人；强酸强碱废液不能直接倒入水槽。"},
+      {t:"易错",x:"“一贴、二低、三靠”最容易出错：滤纸未紧贴漏斗壁（有气泡）、滤纸边缘高于漏斗边缘或液面高于滤纸边缘、烧杯口未靠玻璃棒或玻璃棒未靠滤纸或漏斗下端未靠烧杯内壁；玻璃棒若指在单层滤纸处，容易把滤纸捅破导致滤液浑浊。"}
+    ],
+    note:"常用的固液分离方法有四种：常压过滤、减压过滤（抽滤，速度快、沉淀较干燥）、热过滤（防结晶析出）和离心分离（少量沉淀）；应根据沉淀的状态和性质选择。"
+  },
+  {
+    name:"蒸发结晶",
+    keywords:["蒸发","结晶","蒸发皿","浓缩","烘干"],
+    category:"基本操作 · 分离提纯",
+    instruments:["蒸发皿","铁架台(带铁圈)","酒精灯","玻璃棒","坩埚钳","石棉网","干燥器"],
+    supplies:[],
+    materials:["待蒸发溶液（如约50mL NaCl溶液或提纯后的滤液）"],
+    principle:"通过加热使溶剂挥发，溶液浓缩至过饱和后溶质结晶析出。适用于溶解度受温度影响不大的物质（如NaCl）。蒸发皿中的液体不要超过其容积的2/3；加热过程中必须用玻璃棒不断搅拌。",
+    steps:[
+      {s:"将待蒸发滤液倒入蒸发皿（不超过容积的2/3），放在铁架台的铁圈上，下方垫石棉网。",w:"液体过多，加热时容易沸腾外溅；垫石棉网既使受热均匀，也便于放置和取下。"},
+      {s:"点燃酒精灯加热，边加热边用玻璃棒不断搅拌。",w:"搅拌使液体各部分受热均匀，防止局部过热造成暴沸和液滴飞溅——这正是蒸发操作中人不能离开、手不能停的原因。"},
+      {s:"当蒸发皿中出现较多固体时，停止加热。",w:"蒸发皿蓄热多、余热温度很高，继续加热会使固体飞溅出来，造成损失和烫伤；出现较多固体时停火，利用余热即可把剩余少量水分蒸干。"},
+      {s:"利用余热将剩余的少量水分蒸干。",w:"利用余热既节省能源，又避免过度加热导致固体飞溅或分解。"},
+      {s:"用坩埚钳取下蒸发皿，放在石棉网上冷却，将固体转移到指定容器中。",w:"热的蒸发皿不能直接放在实验台上（会烫坏台面，且温差过大可能使瓷皿炸裂）；用坩埚钳取放是为了防止烫伤。"}
+    ],
+    equation:"—（物理变化：溶剂挥发、溶质结晶）",
+    pitfalls:[
+      {t:"耗时",x:"50mL溶液蒸发至出现较多固体通常需要15~25分钟，期间玻璃棒要不停地搅拌，手会比较累，但搅拌一旦停下就可能局部暴沸飞溅。"},
+      {t:"危险",x:"蒸发皿和石棉网温度很高，取放必须用坩埚钳，不能直接放在实验桌上；热的蒸发皿遇冷水会炸裂；搅拌时玻璃棒不要刮擦皿壁；旁边不要堆放滤纸、乙醇等易燃物。"},
+      {t:"易错",x:"停火时机是关键——出现较多固体时就应停火，用余热蒸干；如果把水完全蒸干才停火，固体容易飞溅出来；对于溶解度随温度变化很大的物质（如KNO₃、CuSO₄·5H₂O），应采用冷却结晶而不是蒸发结晶。"}
+    ],
+    note:"溶解度随温度变化小的物质（NaCl）宜用蒸发结晶；溶解度随温度升高显著增大的物质（KNO₃）宜用冷却结晶；重结晶是提纯固体混合物的常用方法。"
+  },
+  {
+    name:"蒸馏",
+    keywords:["蒸馏","沸点","分离","蒸馏烧瓶","冷凝管","分馏"],
+    category:"基本操作 · 分离提纯",
+    instruments:["蒸馏烧瓶","温度计","冷凝管","牛角管(接液管)","锥形瓶","酒精灯(或水浴锅)","铁架台(带铁夹)","石棉网","橡胶管"],
+    supplies:["沸石(碎瓷片)"],
+    materials:["待蒸馏液体（如50mL含少量水的乙醇）"],
+    principle:"利用互溶液体混合物中各组分沸点不同进行分离。温度计水银球的上沿应与蒸馏烧瓶支管口的下沿相平，此时测得的是馏出蒸气的温度。冷却水从冷凝管下口进、上口出，与蒸气逆流接触，冷凝效果最好。",
+    steps:[
+      {s:"按“从下至上、从左至右”的顺序安装装置（先放好酒精灯，再固定蒸馏烧瓶，最后装冷凝管），并检查各接口密封。",w:"先放酒精灯再固定烧瓶，是为了用外焰的高度确定烧瓶的位置（外焰温度最高）；接口密封可防止蒸气逸出——既避免危险和产品损失，也保证蒸气全部进入冷凝管。"},
+      {s:"向蒸馏烧瓶中加入约50mL待蒸馏液体和2~3粒沸石（液体总量不超过烧瓶容积的2/3）。",w:"沸石内部多孔，能提供汽化中心，防止液体过热后突然暴沸（暴沸会使液体冲入冷凝管甚至喷出伤人）；液体过多同样容易暴沸。若忘记加沸石，必须停止加热、待液体冷却后再补加——热液中直接加沸石等于瞬间引发暴沸。"},
+      {s:"温度计通过单孔塞插入，使水银球上沿与支管口下沿相平。",w:"蒸馏时要测量的是即将进入冷凝管的蒸气温度（即馏分的沸点），而不是烧瓶内液体的温度；水银球位置偏高或偏低，都会使读数偏离真实沸点。"},
+      {s:"先向冷凝管中通入冷却水（下口进、上口出），再加热（含水乙醇宜用水浴加热）。",w:"冷却水与蒸气逆流接触，冷凝效果最好。若先加热后通水，蒸气会从冷凝管上口逸出，造成烫伤和产品损失；含水乙醇易燃，用明火直接加热有火灾风险，水浴加热温度可控、更安全。"},
+      {s:"收集所需温度范围的馏分（如乙醇收集77~79℃的馏分）。",w:"混合液中沸点低的组分先蒸出，控制收集温度可得到较纯净的馏分；温度计读数突然下降，说明该组分已基本蒸完，应更换接收器或停止加热。"},
+      {s:"蒸馏结束时先停止加热，继续通冷却水至馏出液不再滴出，再关闭冷却水。",w:"先停水会使残余蒸气在冷凝管中冷凝形成负压，可能使体系内外压不平衡；继续通水可保证没有蒸气逸出。接收器（锥形瓶）不能加塞子，也是为了与大气相通、防止体系密闭因压差炸裂。"}
+    ],
+    equation:"—（物理分离操作）",
+    pitfalls:[
+      {t:"耗时",x:"装置组装和密封检查约10分钟；加热至沸腾并稳定流出约5~10分钟；若用明火直接加热含水乙醇，既要控制火力又要防着火，反而更紧张；建议改用水浴加热。"},
+      {t:"危险",x:"忘记加沸石是最常见的事故——液体会暴沸并冲出瓶口；若中途发现忘记加沸石，必须停止加热、待液体冷却后再补加，热液中加沸石等于瞬间引爆；冷凝水未开通就加热，蒸气会从冷凝管上口逸出造成烫伤；接收器（锥形瓶）不能加塞子，否则体系密闭可能炸裂；含水乙醇易燃，严禁明火。"},
+      {t:"易错",x:"温度计水银球插入液面以下（测的是液体温度）或高出支管口，都会使读数偏离；冷凝水方向接反（上进下出）时冷凝效果差，甚至冲脱胶管；蒸馏烧瓶中液体体积以1/3~2/3为宜，过少易蒸干，过多易暴沸。"}
+    ],
+    note:"蒸馏烧瓶中加入沸石可防止暴沸（沸石只能使用一次，失效后需更换）；若待分离液体沸点相差不大且要分段收集，可改用分馏柱进行分馏。"
+  },
+  {
+    name:"萃取分液",
+    keywords:["萃取","分液","分液漏斗","碘水","四氯化碳","CCl4"],
+    category:"基本操作 · 分离提纯",
+    instruments:["分液漏斗(100mL)","铁架台(带铁圈)","烧杯(50mL)","玻璃棒"],
+    supplies:[],
+    materials:["碘水（约10mL稀碘水）","四氯化碳(CCl₄) 约3mL","蒸馏水"],
+    principle:"利用溶质在互不相溶的两种溶剂中溶解度的差异进行分离：I₂在CCl₄中的溶解度远大于在水中的溶解度，振荡后I₂被萃取到CCl₄层。CCl₄密度(1.59g/cm³)大于水，所以有机层在下层，呈紫红色。分液时下层液体从下口放出，上层液体从上口倒出。",
+    steps:[
+      {s:"检查分液漏斗是否漏液：关闭活塞，加入少量水，观察活塞处和上口玻璃塞处是否漏水。",w:"分液漏斗有活塞和玻璃塞两个可能漏液的点，漏液会在振荡时造成液体流失和危险，所以使用前必须检漏。"},
+      {s:"向分液漏斗中加入约10mL碘水和约3mL CCl₄（液体总量不超过漏斗容积的2/3）。",w:"装液量过大则振荡时没有空间使两相充分混合，且容易冲开玻璃塞；CCl₄作为萃取剂，与水互不相溶且I₂在其中溶解度远大于在水中的溶解度，能把I₂从水相中“夺取”过来。"},
+      {s:"盖好玻璃塞（塞子上的凹槽或小孔对准漏斗口的小孔，使内外气压相通），一手压住塞子，一手握住活塞部分，倒转分液漏斗；反复振荡，并不时旋开活塞放气。",w:"凹槽对准小孔使漏斗内外气压相通，液体才能靠重力顺利流出；振荡时溶剂挥发使瓶内气压增大，不放气可能冲开塞子或从活塞处喷出液体。放气时漏斗下端向上、活塞朝上打开，让气体向上逸出。"},
+      {s:"将分液漏斗放在铁架台上静置，待液体明显分层（下层CCl₄呈紫红色，上层水层变浅）。",w:"两种互不相溶的溶剂密度不同会分层——CCl₄密度(1.59g/cm³)大于水，所以有机层在下层；充分静置才能使两相界面清晰，否则分液时容易混层。"},
+      {s:"分液：先打开上口玻璃塞（或使凹槽对准小孔），再打开活塞，让下层液体沿烧杯壁缓慢流出；待下层液体刚好放完（界面到达活塞口）时关闭活塞；上层液体从上口倒入另一个烧杯。",w:"先打开上口塞是让大气进入漏斗，液体才能靠重力持续流出；下层从下口放、上层从上口倒，是为了避免上层液体经过下口时被残留下的下层液体污染；界面处的液体不要完全放净。"}
+    ],
+    equation:"—（物理过程：I₂从水相转移到CCl₄相）",
+    pitfalls:[
+      {t:"耗时",x:"振荡和放气要反复多次（每次振荡后都要放气一次），静置分层通常需要5~10分钟，总耗时约15分钟；若界面不清或出现乳化，等待时间还要延长。"},
+      {t:"危险",x:"CCl₄有毒（实验中可用毒性较小的苯、甲苯或乙酸乙酯替代，但密度差异会改变分层顺序）；振荡后忘记放气，内压增大可能冲开玻璃塞或从活塞处喷出液体；下层液体放出时漏斗下端要紧靠烧杯内壁，防止溅出。"},
+      {t:"易错",x:"上层液体若从下口放出，会因残留下层液体而混入杂质；两层界面处的液体不要完全放净；分液漏斗使用前必须检漏；玻璃塞的凹槽要对准漏斗口的小孔，否则液体流不下来；碘水加得过多会使CCl₄层颜色过深，影响分层观察。"}
+    ],
+    note:"萃取剂的选择原则：与原溶剂互不相溶；溶质在萃取剂中的溶解度远大于在原溶剂中；萃取剂与溶质不发生化学反应。"
+  },
+  {
+    name:"酸碱中和滴定",
+    keywords:["中和滴定","滴定","酸","碱","滴定管","锥形瓶","酚酞","甲基橙"],
+    category:"定量分析",
+    instruments:["酸式滴定管(50mL)","碱式滴定管(50mL)","锥形瓶(250mL)","铁架台(带滴定管夹)","移液管(25mL)","烧杯","洗瓶"],
+    supplies:["白纸（垫在锥形瓶下便于观察终点颜色）"],
+    materials:["标准NaOH溶液(约0.1mol/L，已标定)","待测盐酸(约0.1mol/L) 25.00mL×3份","酚酞指示剂(0.2%) 2~3滴/份","甲基橙指示剂(0.1%)","蒸馏水"],
+    principle:"NaOH + HCl = NaCl + H₂O。等物质的量点时溶液呈中性(pH=7)。用酚酞作指示剂时，终点由无色变为浅红色(pH约8~9)且半分钟内不褪色。计算公式：c(HCl)=c(NaOH)·V(NaOH)/V(HCl)。若待测盐酸约0.1mol/L，则每份25.00mL约消耗0.1mol/L NaOH标准液25mL。",
+    steps:[
+      {s:"洗净滴定管，先用少量标准NaOH溶液润洗2~3次，再装入标准液，排除尖嘴气泡，调节液面至0刻度附近，记录初读数。",w:"滴定管内壁附着的水会稀释标准液，使测定结果偏高，所以必须用所装标准液润洗；尖嘴内的气泡占据的体积会被计入消耗体积，必须排除；读初读数是计算消耗体积所必需的。"},
+      {s:"用移液管准确移取25.00mL待测盐酸，放入250mL锥形瓶，加2~3滴酚酞指示剂和约20mL蒸馏水。",w:"移液管是量出式仪器，能量取准确体积；加水稀释不改变溶质的物质的量，但能使溶液颜色变化更明显、便于观察终点；指示剂只需几滴——加多了指示剂本身会消耗少量酸碱，且颜色过深反而看不清终点。"},
+      {s:"将锥形瓶放在滴定管下方（下垫白纸），左手控制滴定管活塞（碱式滴定管则轻挤玻璃珠中部），右手持锥形瓶颈，手腕用力向一个方向摇动，眼睛注视瓶内溶液颜色变化。",w:"左手控制活塞便于在接近终点时逐滴、半滴地加入；边滴边摇使反应物充分混合、避免局部过量；眼睛要注视瓶内颜色变化（而不是盯着滴定管），才能及时捕捉终点；垫白纸是为了衬托颜色，使终点变化更清晰。"},
+      {s:"开始滴定时速度可稍快；接近终点时逐滴、半滴加入，每加半滴摇匀一次；溶液由无色变为浅红色且半分钟内不褪色，即为终点，记录终读数。",w:"半滴操作可避免滴过终点（滴定误差的主要来源）；“半分钟不褪色”说明反应确已达到完全——若红色很快褪去，可能是局部酸碱过量或空气中CO₂溶入的干扰，尚未真正到达终点。"},
+      {s:"平行滴定3份，每次消耗NaOH溶液的体积差值不超过0.04mL，取平均值计算待测盐酸浓度。",w:"平行测定可以减小偶然误差；若某次与其他两次差值过大，说明该次操作有明显失误（如滴过终点、气泡未排净），应重做；取平均值可提高结果的可靠性。"}
+    ],
+    equation:"NaOH + HCl = NaCl + H₂O；c(HCl)=c(NaOH)·V(NaOH)/V(HCl)",
+    pitfalls:[
+      {t:"耗时",x:"滴定管润洗、装液、排气泡约10分钟；每份滴定2~5分钟，平行3份加数据处理约20分钟；总耗时约40分钟。其中近终点时的“半滴”操作最考验耐心，操之过急会滴过终点。"},
+      {t:"危险",x:"酸碱溶液溅到皮肤或眼睛，应立即用大量水冲洗；滴定管尖嘴不要对着人；左手控制活塞用力要轻，防止活塞芯冲出；锥形瓶不要放在滴定管口正下方接液，应稍偏一些。"},
+      {t:"易错",x:"滴定管必须用所装标准液润洗（不润洗则标准液被稀释，测定结果偏高）；锥形瓶只能用蒸馏水洗，绝不能用待测液润洗（否则待测物偏多，结果偏高）；装液后必须排除尖嘴气泡（气泡占据的体积会使读数偏大）；初读数和终读数都要读，且读数时视线与凹液面最低处相平；终点以“半分钟不褪色”为准。"}
+    ],
+    note:"指示剂选择：强酸与强碱互滴，酚酞（无色变浅红，pH 8~10）和甲基橙（黄变橙，pH 3.1~4.4）均可；但弱酸与强碱滴定时只能选酚酞，强酸与弱碱滴定时只能选甲基橙。"
+  },
+  {
+    name:"中和热测定",
+    keywords:["中和热","热量","保温","反应热","ΔH","量热"],
+    category:"定量分析 · 热效应",
+    instruments:["保温杯(或量热计)","温度计(0.1℃分度)","环形玻璃搅拌棒","量筒(50mL)","烧杯"],
+    supplies:["硬纸板（盖板）","秒表"],
+    materials:["0.50mol/L盐酸 50mL","0.55mol/L NaOH溶液 50mL"],
+    principle:"H⁺ + OH⁻ = H₂O，ΔH ≈ -57.3 kJ/mol。NaOH稍过量(0.55对0.50mol/L)是为了保证盐酸完全反应。混合液总质量约100g（密度按1g/mL），Q=cmΔt≈4.18J/(g·℃)×100g×Δt；ΔH=-Q/n(H₂O)，其中n(H₂O)=0.025mol。若测得Δt约3~4℃，则Q约1.3~1.7kJ，ΔH约-50~-67kJ/mol；由于热量散失，测定值的绝对值通常略小于57.3kJ/mol。",
+    steps:[
+      {s:"用量筒量取50mL 0.50mol/L盐酸，倒入保温杯内筒，盖好盖板，插入温度计和环形搅拌棒，待温度稳定后读取并记录初始温度t₁。",w:"盖板和保温杯都是为了减少热量散失（这是量热实验的关键）；初始温度必须等示数稳定后再读，否则计时和计算的起点不准。"},
+      {s:"用量筒快速量取50mL 0.55mol/L NaOH溶液。",w:"提前量好、混合时一次倒入，可缩短混合时间，减少混合过程中的热量散失——所以强调“快速”。"},
+      {s:"打开盖板，将NaOH溶液一次性迅速倒入保温杯，立即盖好盖板，用环形玻璃搅拌棒上下轻轻搅动。",w:"慢慢倒入会使反应断断续续、热量散失多，测定结果偏离大；搅拌使酸碱充分混合、温度均匀，测得的最高温度才准确；环形玻璃搅拌棒不导热、搅拌效果好，可减少附加的热量变化。"},
+      {s:"观察温度变化，记录达到的最高温度t₂。",w:"中和反应瞬间完成，混合后温度升至最高点又会因散热而下降，所以必须读取最高温度而不是任意时刻的温度；读取要及时，错过最高点就会低估温升。"},
+      {s:"计算Δt=t₂-t₁，代入公式计算中和热；重复测定一次，取平均值。",w:"中和热定义为生成1mol水时的反应热，必须把实测总热量除以生成水的物质的量(0.025mol)；NaOH稍过量是为了保证盐酸完全反应，否则盐酸有剩余会使结果偏小；重复测定取平均可减小偶然误差。"}
+    ],
+    equation:"H⁺ + OH⁻ = H₂O，ΔH ≈ -57.3 kJ/mol；Q = 4.18×100×Δt (J)；ΔH = -Q/0.025 (kJ/mol)",
+    pitfalls:[
+      {t:"耗时",x:"关键在一个“快”字——从倒入NaOH到盖好盖板、开始搅拌要在十几秒内完成，动作慢则热量散失多、结果偏离大；等待温度升到最高并读数约需2~3分钟。"},
+      {t:"危险",x:"酸碱有腐蚀性，倾倒时不要溅出；温度计和环形搅拌棒不要碰到保温杯壁（会摩擦生热影响读数）；若用碎泡沫塑料板自制量热计，要注意清理碎屑。"},
+      {t:"易错",x:"盖板上的两个孔分别插温度计和搅拌棒，漏插孔会导致热量散失；初始温度必须等示数稳定后再读；NaOH浓度略高(0.55mol/L)是有意为之，不是配错了；测定结果一般小于57.3kJ/mol（绝对值），这是热量散失的正常现象，不是计算错误；搅拌要轻而慢，剧烈搅拌会额外做功生热。"}
+    ],
+    note:"减小误差的要点：保温要好、动作要快、混合要匀、读数要及时。若换成弱酸（如醋酸）与强碱反应，因醋酸电离吸热，测得的中和热绝对值会明显小于57.3kJ/mol。"
+  },
+  {
+    name:"钠与水的反应",
+    keywords:["钠","水","钠与水","金属钠","浮游熔响","酚酞"],
+    category:"元素化学 · 金属",
+    instruments:["烧杯(100mL)","镊子","小刀","玻璃片","胶头滴管"],
+    supplies:["滤纸（吸干煤油）"],
+    materials:["金属钠（绿豆大一块，约0.05~0.1g）","蒸馏水 约50mL","酚酞试液 2滴","煤油（保存钠用）","乙醇（处理废钠用）"],
+    principle:"2Na + 2H₂O = 2NaOH + H₂↑。钠的密度(0.97g/cm³)小于水，熔点低(97.8℃)，反应放出的热量可使钠熔成小球；产生的氢气推动钠球四处游动并发出嘶嘶声；生成的NaOH使酚酞变红。用量核算：0.1g钠(约0.0043mol)完全反应可生成氢气约100mL（标准状况）。",
+    steps:[
+      {s:"用镊子从煤油中取出一块金属钠，用滤纸吸干表面的煤油。",w:"钠保存在煤油中是为了隔绝空气和水（钠极易与氧气、水反应）；煤油不影响反应但会浮在水面干扰观察，所以要用滤纸吸干；用镊子而不能用手——皮肤上的水分即可与钠反应造成灼伤。"},
+      {s:"在玻璃片上用小刀切下绿豆大小的一块，观察新鲜切面：银白色、有金属光泽，很快变暗。",w:"切面的银白色光泽证明钠是金属；“很快变暗”是因为钠极活泼，立即与空气中的氧气反应生成氧化钠。切小块（绿豆大小）是因为钠与水反应剧烈，大块钠放热多可使生成的氢气燃烧甚至爆炸。"},
+      {s:"向100mL烧杯中加入约50mL蒸馏水和2滴酚酞试液。",w:"水量足够让钠自由浮动，便于观察“浮、熔、游、响”各现象；酚酞用于检验反应生成的NaOH（碱性溶液使酚酞变红）。"},
+      {s:"用镊子夹取钠块，放在烧杯水面上方，观察现象：钠浮在水面上，熔成闪亮的小球，四处游动，发出嘶嘶声，溶液变成红色。",w:"五个现象各有其原因：浮——钠的密度(0.97g/cm³)小于水；熔——钠的熔点低(97.8℃)且反应放热；游——生成的氢气推动钠球运动；响——反应剧烈、不断放出气体；红——生成了碱NaOH使酚酞变红。抓住现象与性质的对应关系，就能理解金属钠的化学特性。"},
+      {s:"反应结束后，将废液倒入指定容器；残余的钠屑必须用乙醇处理，不可随意丢弃或投入水槽。",w:"钠与乙醇缓慢反应放出氢气，比用水处理温和、易于控制，是实验室销毁残余钠的常用方法；残余钠若扔进废液缸或水槽，遇水会剧烈反应甚至爆炸起火。"}
+    ],
+    equation:"2Na + 2H₂O = 2NaOH + H₂↑",
+    pitfalls:[
+      {t:"耗时",x:"演示本身只需几分钟，但准备工作要细致：吸干煤油、切取大小合适的钠块；反应后剩余钠块的销毁（用乙醇浸泡）也要花时间，不能省略。"},
+      {t:"危险",x:"钠非常活泼——切取的钠块一定要小（绿豆大小），大块钠与水反应放热可使生成的氢气燃烧甚至爆炸；不能用手直接接触钠（皮肤上的水分即可引发反应造成灼伤）；反应应在通风处进行并佩戴护目镜；废钠必须用乙醇处理，严禁扔进废液缸或水槽。"},
+      {t:"易错",x:"钠表面的煤油必须用滤纸吸干，否则钠块浮动时煤油会影响观察；水量不能太少（要能让钠自由浮动）；切面变暗说明已被氧化，应切去表层取新鲜面；若钠块粘在烧杯壁上，不要用手去抠，可用水冲下；剩余钠块不要放回试剂瓶（会污染整瓶钠）。"}
+    ],
+    note:"“浮、熔、游、响、红”五个现象分别对应：钠的密度小于水、钠的熔点低且反应放热、生成的氢气推动钠球游动、反应剧烈发出声响、生成了碱NaOH。金属钠通常保存在煤油中以隔绝空气和水。"
+  },
+  {
+    name:"铁及其化合物的性质",
+    keywords:["铁","氧化铁","氢氧化铁","铁离子","亚铁离子","Fe","KSCN","颜色"],
+    category:"元素化学 · 金属",
+    instruments:["试管(4~5支)","试管架","胶头滴管","酒精灯","烧杯(水浴用)"],
+    supplies:["砂纸（打磨铁丝用）"],
+    materials:["FeCl₃溶液(0.1mol/L) 约2mL","(NH₄)₂Fe(SO₄)₂·6H₂O溶液(0.1mol/L，莫尔盐) 或新配FeSO₄溶液(0.1mol/L) 约4mL","NaOH溶液(2mol/L) 数滴","HCl(2mol/L) 数滴","KSCN溶液(0.1mol/L) 2滴","新制氯水 3滴","还原铁粉 少许","K₄[Fe(CN)₆]溶液(0.1mol/L) 数滴","K₃[Fe(CN)₆]溶液(0.1mol/L) 数滴","KI溶液(0.1mol/L) 数滴","淀粉溶液 数滴","CCl₄ 数滴","蒸馏水(预先煮沸除氧) 少许"],
+    principle:"Fe³⁺遇OH⁻生成红褐色Fe(OH)₃沉淀；Fe²⁺遇OH⁻生成白色Fe(OH)₂，迅速被空气中氧气氧化，颜色由白变灰绿最终变红褐色（4Fe(OH)₂+O₂+2H₂O=4Fe(OH)₃）；Fe³⁺遇SCN⁻变血红色（Fe³⁺+3SCN⁻=Fe(SCN)₃），是Fe³⁺的特征反应；Fe²⁺遇KSCN不变色，被氯水氧化为Fe³⁺后才变红（2Fe²⁺+Cl₂=2Fe³⁺+2Cl⁻）。",
+    steps:[
+      {s:"取一支试管，加入约1mL 0.1mol/L FeCl₃溶液，滴加2滴2mol/L NaOH溶液，观察：生成红褐色絮状沉淀。",w:"Fe³⁺与OH⁻结合生成难溶的Fe(OH)₃，红褐色是Fe(OH)₃的特征颜色，可用来检验Fe³⁺的存在。这是利用生成沉淀的颜色来鉴定离子的思路。"},
+      {s:"取一支试管，加入约2mL新配的0.1mol/L FeSO₄溶液；将吸有NaOH溶液的长滴管插入液面以下再挤出，观察：生成白色沉淀，迅速变为灰绿色，最后变为红褐色。",w:"Fe(OH)₂本是白色沉淀，但极易被空气中的氧气氧化，颜色按白→灰绿→红褐（混合物）→红褐(Fe(OH)₃)变化。把滴管插入液面以下挤出碱液、并用预先煮沸除氧的蒸馏水，都是为了尽量减少沉淀与空气接触——否则白色一瞬间就过去，根本观察不到。"},
+      {s:"取一支试管，加入约1mL FeCl₃溶液，滴加1滴0.1mol/L KSCN溶液，观察：溶液立即变为血红色。",w:"Fe³⁺与SCN⁻形成血红色的配合物[Fe(SCN)ₙ]³⁻ⁿ，灵敏度很高、现象明显，所以是检验Fe³⁺的首选方法。只需1滴即可显色，加多了浪费且颜色过深。"},
+      {s:"取一支试管，加入约2mL FeSO₄溶液，先滴加1滴KSCN溶液（无明显变化），再滴加新制氯水3滴，观察：溶液变血红色。",w:"Fe²⁺遇SCN⁻不显色，说明Fe²⁺不与SCN⁻形成红色配合物；加入氯水（Cl₂）把Fe²⁺氧化为Fe³⁺后显色，证明原溶液中存在的是Fe²⁺——“先不变色、氧化后变色”是检验Fe²⁺的经典方法。"},
+      {s:"向FeCl₃溶液中加入一小团还原铁粉和几滴盐酸，振荡，溶液由棕黄色变为浅绿色。",w:"Fe³⁺有氧化性，被Fe还原为Fe²⁺（2Fe³⁺+Fe=3Fe²⁺）；加酸是抑制Fe³⁺、Fe²⁺的水解，防止生成氢氧化物沉淀干扰观察——这也说明保存亚铁盐溶液为什么要加少量酸。"},
+      {s:"另取两支试管：向FeCl₃溶液中滴加K₄[Fe(CN)₆]溶液、向FeSO₄溶液中滴加K₃[Fe(CN)₆]溶液，均生成蓝色沉淀。",w:"Fe³⁺与[Fe(CN)₆]⁴⁻生成普鲁士蓝、Fe²⁺与[Fe(CN)₆]³⁻生成滕氏蓝，都是特征的蓝色沉淀，可用于进一步区分和确认两种价态的铁离子（与KSCN法互补）。"},
+      {s:"加热试管中的FeCl₃溶液，观察颜色变深（可有红褐色沉淀生成）。",w:"Fe³⁺在水中存在水解平衡（Fe³⁺+3H₂O⇌Fe(OH)₃+3H⁺），加热促进水解，所以颜色变深甚至产生沉淀——这正是配制铁盐溶液要加酸抑制水解的原因。"}
+    ],
+    equation:"Fe³⁺+3OH⁻=Fe(OH)₃↓；Fe²⁺+2OH⁻=Fe(OH)₂↓(白→灰绿→红褐)；4Fe(OH)₂+O₂+2H₂O=4Fe(OH)₃；Fe³⁺+3SCN⁻=Fe(SCN)₃(血红色)；2Fe²⁺+Cl₂=2Fe³⁺+2Cl⁻；2Fe³⁺+Fe=3Fe²⁺",
+    pitfalls:[
+      {t:"耗时",x:"Fe(OH)₂的白色沉淀转瞬即逝，观察要集中精力；蒸馏水预先煮沸除氧、配制新FeSO₄溶液等准备工作约需15分钟，必须提前做。"},
+      {t:"危险",x:"氯水有刺激性气味(Cl₂)，用量要少并在通风处操作；NaOH溶液有腐蚀性；酒精灯加热时试管口不要对着人；含铁废液应集中回收。"},
+      {t:"易错",x:"观察Fe(OH)₂成败的关键是“赶氧”——蒸馏水要预先煮沸除去溶解氧，滴管要插入液面以下挤出碱液，必要时加一层液体石蜡液封；FeSO₄溶液要新配制（久置会被氧化变黄），教材中用较稳定的莫尔盐[(NH₄)₂Fe(SO₄)₂·6H₂O]配制Fe²⁺溶液也是出于同样考虑；KSCN溶液只需1滴即可显色；FeCl₃溶液长期放置会因水解而浑浊。"}
+    ],
+    note:"Fe²⁺与Fe³⁺的相互转化是核心：Fe²⁺遇氧化剂（Cl₂、H₂O₂、KMnO₄）变为Fe³⁺；Fe³⁺遇还原剂（Fe、Cu、I⁻、SO₂）变为Fe²⁺。保存亚铁盐时应加少量酸和铁粉防止氧化。"
+  },
+  {
+    name:"焰色反应",
+    keywords:["焰色","焰色反应","钠焰","钾焰","金属","颜色","蓝色钴玻璃"],
+    category:"元素化学 · 检验",
+    instruments:["铂丝(或光洁无锈的铁丝/镍丝)","酒精灯","蓝色钴玻璃"],
+    supplies:["火柴"],
+    materials:["浓盐酸 少许","NaCl、KCl、LiCl、CaCl₂、SrCl₂、BaCl₂的溶液或固体（作焰色对比）"],
+    principle:"某些金属或其化合物在灼烧时能使火焰呈现特征颜色，属于物理变化（电子受热激发跃迁后释放特定波长的光）。钠的焰色为黄色，钾为紫色，且必须透过蓝色钴玻璃观察（滤去钠杂质黄光的干扰）。常见焰色：钠黄、钾紫、锂紫红、钙砖红、锶洋红、钡黄绿、铜绿。",
+    steps:[
+      {s:"将铂丝（或光洁无锈的铁丝）蘸取浓盐酸，在酒精灯外焰上灼烧至火焰不显杂色，反复2~3次，直到火焰无色。",w:"铂丝上残留的前一种样品会干扰下一种样品的焰色（不同金属的焰色混在一起无法分辨）；浓盐酸能溶解金属盐并在灼烧时挥发除去，反复灼烧至无色说明铂丝已洁净。"},
+      {s:"用铂丝蘸取NaCl溶液（或固体NaCl），在酒精灯外焰上灼烧，观察：火焰呈黄色。",w:"钠元素的原子受热激发后，电子跃迁回低能级时放出特定波长的黄光，这是钠元素的特征光谱。黄色火焰非常灵敏，即使微量的钠也存在，所以清洗不净的铂丝最容易“串色”。"},
+      {s:"再用浓盐酸洗净铂丝并灼烧至无色。",w:"每换一种样品都要重新清洗灼烧，防止上一种样品的颜色干扰下一种——这是焰色反应误差的主要来源。"},
+      {s:"蘸取KCl溶液灼烧，直接观察时淡紫色常被掩盖；隔着蓝色钴玻璃观察，可见清晰的紫色火焰。",w:"钾的紫色火焰中常混有钠的黄色光（钾中常含微量钠杂质，且黄色光强度大），会掩盖紫色；蓝色钴玻璃能吸收黄光、只让紫光透过，从而滤去干扰——所以观察钾的焰色必须透过蓝色钴玻璃。"},
+      {s:"依次换用LiCl、CaCl₂、SrCl₂、BaCl₂等重复操作，对比各种金属元素的焰色。",w:"不同金属元素的原子结构不同，电子跃迁时放出的光波长不同，所以焰色不同——焰色反应的物理本质是电子能级跃迁，过程中没有新物质生成，因此属于物理变化，可反复进行。"}
+    ],
+    equation:"—（物理变化：电子能级跃迁释放能量）",
+    pitfalls:[
+      {t:"耗时",x:"每换一种样品，铂丝都要用盐酸洗净并灼烧至无色，这一步往往要反复几次才能做好；观察钾的紫色必须借助蓝色钴玻璃，否则容易被钠的黄光掩盖而看不到。"},
+      {t:"危险",x:"酒精灯使用注意防火；浓盐酸有刺激性和腐蚀性，蘸取时勿接触皮肤；灼烧后的铂丝温度很高，不要立即用手触摸；铁丝代替铂丝前要确保无锈（可先用盐酸浸泡除锈）。"},
+      {t:"易错",x:"铂丝未洗净是最大的误差来源（前一种样品的颜色会“串”到后一种）；固体样品可直接蘸取，溶液样品要先将铂丝灼烧预热再蘸，否则液滴会冷却火焰使焰色不明显；蘸取样品后应在火焰中反复灼烧并观察颜色变化的全过程。"}
+    ],
+    note:"焰色反应是检验金属元素的物理方法，样品可以是单质也可以是化合物；节日焰火的五彩缤纷即源于不同金属盐的焰色。"
+  },
+  {
+    name:"乙酸乙酯的制备",
+    keywords:["乙酸乙酯","酯化","乙酸","乙醇","浓硫酸","水果香"],
+    category:"有机化学 · 酯化",
+    instruments:["大试管(30mL)","试管(收集)","酒精灯(或水浴锅)","导管","铁架台","烧杯","量筒"],
+    supplies:["碎瓷片（防暴沸）"],
+    materials:["无水乙醇 3mL(约0.05mol)","冰乙酸(或冰醋酸) 2mL(约0.035mol)","浓硫酸 2mL(催化剂)","饱和Na₂CO₃溶液 约5mL"],
+    principle:"CH₃COOH + C₂H₅OH ⇌(浓H₂SO₄, Δ) CH₃COOC₂H₅ + H₂O。酯化反应是可逆反应，浓硫酸起催化和吸水作用；乙醇过量有利于平衡向生成酯的方向移动。产物乙酸乙酯有水果香味，密度(0.90g/cm³)小于水，位于上层。用量核算：2mL乙酸(0.035mol)理论上最多生成乙酸乙酯约3.1g（约3.5mL），实际产率一般60%左右。",
+    steps:[
+      {s:"检查装置：大试管配单孔塞和导管，导管另一端伸入收集试管的液面上方（不能插入液面以下）。",w:"若装置内因温度下降、气压减小会发生倒吸，导管口置于液面上方可防止液体被倒吸入热的反应试管——这与制氧气“先移管再熄灯”是同一个道理。"},
+      {s:"加料顺序：先向大试管中加入3mL无水乙醇，再沿试管壁缓慢加入2mL浓硫酸，摇匀，最后加入2mL冰乙酸，混匀。",w:"浓硫酸密度大且与乙醇、乙酸混合都放热，若后加乙醇会造成剧烈放热、液体飞溅；先加乙醇再加浓硫酸（类似“酸入水”原则），最后加乙酸，可保证安全。乙醇稍过量是为了提高乙酸的转化率（可逆反应）。"},
+      {s:"将大试管固定在铁架台上，放入70~80℃水浴中加热（或隔着石棉网小火加热）。",w:"酯化反应需要加热以提高反应速率，但温度过高会发生副反应（乙醇在140℃左右生成乙醚、170℃左右生成乙烯）且反应物挥发损失，所以要控制温度、温和加热。"},
+      {s:"收集试管中预先加入约5mL饱和Na₂CO₃溶液，导管口置于液面上方。",w:"饱和Na₂CO₃溶液有三个作用：中和挥发出的乙酸、溶解挥发出的乙醇、降低乙酸乙酯的溶解度使其分层析出（盐析作用）；导管不插入液面下是为了防倒吸。"},
+      {s:"加热5~10分钟，观察到收集试管中有油状液体生成，并闻到水果香味，即得乙酸乙酯粗品。",w:"酯化反应是可逆反应，需要一定时间才能达到较大的转化率；水果香味和不溶于水的油状外观是乙酸乙酯的物理特征（密度0.90g/cm³小于水，位于上层）。"}
+    ],
+    equation:"CH₃COOH + C₂H₅OH ⇌(浓H₂SO₄, Δ) CH₃COOC₂H₅ + H₂O",
+    pitfalls:[
+      {t:"耗时",x:"水浴加热需提前烧水；反应本身要持续加热5~10分钟；若用酒精灯直接小火加热，要全程看顾控制温度，耗时且紧张；收集和分液粗产品还要几分钟。"},
+      {t:"危险",x:"加料顺序绝不能颠倒——必须先加乙醇，再加浓硫酸，最后加乙酸；浓硫酸密度大且稀释放热，若后加乙醇会导致剧烈放热飞溅；导管口不能插入饱和Na₂CO₃液面以下，否则因装置内气压降低发生倒吸；小火加热防止反应物炭化变黑。"},
+      {t:"易错",x:"忘记加碎瓷片可能发生暴沸；温度过高时浓硫酸会使乙醇发生副反应（140℃左右生成乙醚、170℃左右生成乙烯），产物混有杂质且有刺激性气味；饱和Na₂CO₃溶液不能用NaOH溶液代替（碱会使生成的酯水解）。"}
+    ],
+    note:"产品检验：闻其水果香味；乙酸乙酯不溶于水且密度比水小，位于上层；用pH试纸检验下层液体，若含乙酸则显酸性。酸+醇→酯+水是制备酯类化合物的通法。"
+  },
+  {
+    name:"银镜反应",
+    keywords:["银镜","银镜反应","葡萄糖","醛基","银氨","乙醛"],
+    category:"有机化学 · 检验醛基",
+    instruments:["试管(2支)","水浴锅(或烧杯盛水)","胶头滴管","烧杯"],
+    supplies:[],
+    materials:["2% AgNO₃溶液 约2mL","2%氨水（逐滴加至沉淀刚好溶解）","10%葡萄糖溶液 2~3滴（或乙醛）","浓硝酸（洗涤试管用）","蒸馏水"],
+    principle:"醛基(-CHO)具有还原性，可将银氨络离子还原为金属银，在洁净的试管壁上析出光亮的银镜。葡萄糖分子中含有醛基：CH₂OH(CHOH)₄CHO + 2[Ag(NH₃)₂]OH →(Δ) CH₂OH(CHOH)₄COONH₄ + 2Ag↓ + 3NH₃ + H₂O。水浴加热温度60~70℃。",
+    steps:[
+      {s:"取一支试管，依次用浓硝酸和蒸馏水洗净。",w:"银镜要求银层均匀附着在洁净的玻璃壁上；试管内壁的油污、水痕会使银层疏松脱落或局部无法沉积。浓硝酸能氧化除去有机油污，是教材指定的试管清洗方法——这是实验成败的关键准备工作。"},
+      {s:"向试管中加入约2mL 2% AgNO₃溶液，逐滴加入2%氨水，边加边振荡，至最初产生的沉淀刚好完全溶解，得到银氨溶液。",w:"氨水与Ag⁺形成稳定的二氨合银络离子[Ag(NH₃)₂]⁺，使氧化性适度且不易析出Ag₂O沉淀。“刚好溶解”是关键——氨水不足则有Ag₂O混入，过量则溶液过于稳定、难以析出银镜。"},
+      {s:"向银氨溶液中加入2~3滴10%葡萄糖溶液，摇匀。",w:"葡萄糖分子中含有醛基(-CHO)，具有还原性，能把[Ag(NH₃)₂]⁺还原为金属银。葡萄糖不能过量，否则还原太快会生成黑色银沉淀而不是光亮的银镜。"},
+      {s:"将试管放入60~70℃的水浴中加热几分钟，静置观察。",w:"水浴加热提供反应所需温度且受热均匀；温度过高（煮沸）会导致银层疏松变黑而不是光亮银镜，温度过低则反应太慢。"},
+      {s:"试管内壁出现光亮的银镜；反应后的废液及时倒入指定回收容器。",w:"银镜的生成说明醛基被氧化（葡萄糖被氧化为葡萄糖酸铵）。银氨溶液久置会生成易爆物质，所以要现配现用，废液也要及时回收、加酸处理。"}
+    ],
+    equation:"CH₂OH(CHOH)₄CHO + 2[Ag(NH₃)₂]OH →(Δ) CH₂OH(CHOH)₄COONH₄ + 2Ag↓ + 3NH₃ + H₂O（乙醛：CH₃CHO + 2[Ag(NH₃)₂]OH →(Δ) CH₃COONH₄ + 2Ag↓ + 3NH₃ + H₂O）",
+    pitfalls:[
+      {t:"耗时",x:"水浴加热约5分钟；最花时间的是试管洗涤——试管不洁净是失败的首要原因，必须用浓硝酸和蒸馏水仔细清洗，然后用蒸馏水反复冲洗至内壁水膜均匀。"},
+      {t:"危险",x:"银氨溶液必须现配现用、不可久置——久置会生成爆炸性的雷酸银等物质；实验后的废液要加酸处理回收银，不能直接倒入水槽；加热必须用水浴（60~70℃），不能直接加热试管；氨水有刺激性气味。"},
+      {t:"易错",x:"氨水不能过量（过量会使银氨溶液过于稳定，析银缓慢甚至得不到银镜）；葡萄糖不能过量，否则还原太快会生成黑色银沉淀而不是银镜；试管壁上的油污、水痕都会导致银层不均匀或完全失败；加热过程中不要剧烈振荡，以免破坏已生成的银镜。"}
+    ],
+    note:"银镜反应是醛基（以及还原性糖）的特征反应，工业上用于制镜，医学上用于尿糖检验；与新制Cu(OH)₂悬浊液的反应（加热生成砖红色Cu₂O沉淀）互为补充，都是检验醛基的常用方法。"
+  },
+  {
+    name:"浓硫酸的稀释",
+    keywords:["浓硫酸","稀释","硫酸","酸入水","腐蚀"],
+    category:"基本操作 · 安全操作",
+    instruments:["烧杯(250mL，耐热)","玻璃棒","量筒(50mL)","胶头滴管"],
+    supplies:["护目镜","耐酸手套"],
+    materials:["浓硫酸(约18.4mol/L，98%，密度1.84g/cm³) 约11mL","蒸馏水 约150mL"],
+    principle:"浓硫酸溶于水放出大量热（1mol H₂SO₄溶于水约放热95kJ），且浓硫酸密度(1.84g/cm³)远大于水。稀释时必须“酸入水”：若把水倒入浓硫酸，水会浮在浓硫酸表面，因瞬间沸腾放热使酸液向四周飞溅，造成严重灼伤。用量核算：配制200mL 1mol/L稀硫酸需H₂SO₄ 0.2mol，即浓硫酸(18.4mol/L)约11mL。",
+    steps:[
+      {s:"计算：配制200mL 1mol/L稀硫酸需浓硫酸约11mL。",w:"稀释前后溶质的物质的量不变（c₁V₁=c₂V₂），据此由目标溶液的浓度和体积算出所需浓硫酸的体积。"},
+      {s:"在250mL烧杯中加入约150mL蒸馏水。",w:"稀释过程大量放热，足够的水可吸收热量、防止温度过高；先加水是“酸入水”原则的前提，也是防止飞溅的第一道保障。"},
+      {s:"将约11mL浓硫酸沿烧杯壁（或沿玻璃棒）缓慢倒入水中。",w:"浓硫酸密度(1.84g/cm³)远大于水，沿壁流入可自然下沉与水混合；若把水倒入浓硫酸，水会浮在表面因稀释放热而瞬间沸腾，带着酸液向四周飞溅，造成严重灼伤——这就是“酸入水”的原因。"},
+      {s:"边倒边用玻璃棒不断搅拌，使产生的热量及时散失。",w:"搅拌使产生的热量迅速扩散，防止局部过热；这是稀释操作中“不断搅”的要领，与“沿器壁、慢慢倒”共同构成安全稀释三要素。"},
+      {s:"冷却至室温后，再将溶液转入容量瓶定容（或直接使用）。",w:"热溶液体积偏大，此时定容或量取都不准确，必须冷却至室温；稀释后的稀硫酸也要贴好标签。"},
+      {s:"若不慎将酸液溅到皮肤或桌面上，立即用大量水冲洗，再用3%~5%碳酸氢钠溶液处理。",w:"浓硫酸有强腐蚀性和脱水性，大量流水冲洗可快速降温和稀释；碳酸氢钠用于中和残余的酸。这是实验事故急救的标准处理流程。"}
+    ],
+    equation:"H₂SO₄(浓) + H₂O → 稀硫酸（溶解放热过程）",
+    pitfalls:[
+      {t:"耗时",x:"稀释本身只需几分钟，但稀释后溶液必须冷却至室温才能转入容量瓶定容或量取使用，等待冷却常被忽略而拖慢后续实验步骤。"},
+      {t:"危险",x:"切记“酸入水、沿器壁、慢慢倒、不断搅”，绝不能把水倒入浓硫酸；稀释时大量放热，烧杯发烫不能用手直接拿；操作必须佩戴护目镜和耐酸手套；盛放容器不能用纸杯或塑料杯。"},
+      {t:"易错",x:"用量筒量取浓硫酸时视线要与凹液面最低处水平；沿玻璃棒引流可防止液体外溅；稀释浓硝酸、浓盐酸的方法相同（都是密度大的液体加入水中）；若稀释时温度过高，应停止加酸，待降温后再继续。"}
+    ],
+    note:"这是化学实验安全操作的“铁律”：稀释浓硫酸永远是“酸入水”。类似的原则也适用于浓硝酸、浓盐酸等密度大于水的液体试剂的稀释。"
+  },
+  {
+    name:"硝酸钾的制备和提纯",
+    keywords:["硝酸钾","KNO3","重结晶","冷却结晶","溶解度","提纯"],
+    category:"基本操作 · 分离提纯（重结晶）",
+    instruments:["台秤(0.1g)","烧杯(100mL)","酒精灯","石棉网","玻璃棒","布氏漏斗","抽滤瓶","循环水泵","温度计","烘箱(或吹风机)","表面皿"],
+    supplies:["滤纸"],
+    materials:["NaNO₃(固，AR) 11.3g","KCl(固，AR) 10g","蒸馏水 20mL","AgNO₃溶液(0.1mol/L) 数滴"],
+    principle:"NaNO₃ + KCl ⇌ KNO₃ + NaCl。利用四种盐在不同温度下溶解度的差异进行分离：0℃时KNO₃的溶解度仅13.3g，NaCl为35.7g；升温至100℃，KNO₃溶解度剧增至246g，而NaCl仅39.8g。将NaNO₃与KCl的浓热溶液蒸发浓缩，溶解度小的NaCl先析出，趁热过滤除去；滤液冷却时溶解度骤降的KNO₃大量结晶析出。用量核算：11.3g NaNO₃(0.133mol)理论上最多生成KNO₃约13.4g。",
+    steps:[
+      {s:"用台秤称取11.3g NaNO₃和10g KCl，放入100mL烧杯，加20mL蒸馏水。",w:"按反应NaNO₃+KCl=KNO₃+NaCl，两者按等物质的量配料（11.3g/85≈0.133mol，10g/74.5≈0.134mol）可提高限量反应物的利用率；水量按“刚好在高温下溶解两者”设计，水多会降低产率，水少则溶解不完全。"},
+      {s:"将烧杯放在石棉网上，用酒精灯小火加热促溶，不断搅拌；沸腾后若晶体尚未完全溶解，可补加少量水使刚好完全溶解，随即停止加热。",w:"加热可提高四种盐的溶解度，促使固体溶解；但蒸发掉过多水分会使NaCl在高温下就析出混入产品，所以要“补加少量水、沸腾即停”，控制水分是控制产品纯度的关键。"},
+      {s:"趁热用预热过的漏斗常压过滤（若溶液澄清透亮，可省略此步），除去先析出的NaCl晶体。",w:"高温下NaCl溶解度较小而先析出，KNO₃溶解度很大仍留在溶液中，趁热过滤可把NaCl除去。漏斗必须预热，且动作要快——若不趁热，温度一下降KNO₃会连同NaCl一起在滤纸上析出，造成损失和污染。"},
+      {s:"滤液静置冷却，可放入冷水或冰水中加速冷却，KNO₃晶体大量析出。",w:"KNO₃的溶解度随温度降低急剧减小（70℃时约138g，0℃时仅13.3g），冷却时大量KNO₃析出，而NaCl溶解度变化小仍留在溶液中——利用溶解度差异分离是本实验的核心；冷却越彻底，产率越高。"},
+      {s:"减压过滤收集晶体，用少量冰水（或饱和KNO₃溶液）洗涤1~2次，抽干。",w:"抽滤得到的固体较干燥；用冰水或饱和KNO₃溶液洗涤可减少KNO₃因溶解造成的损失（饱和溶液已不能再溶解KNO₃），用普通水洗涤则产品损失明显。"},
+      {s:"检验Cl⁻：另取10mL蒸馏水，加入少量粗品KNO₃溶解，滴加2滴0.1mol/L AgNO₃溶液，与纯KNO₃溶液作对照。",w:"产品中若残留NaCl，Cl⁻与Ag⁺生成不溶于稀硝酸的白色AgCl沉淀；与纯品溶液对照可半定量判断杂质多少——这是检查可溶性杂质是否除尽的常用方法。"},
+      {s:"重结晶：将粗品溶于约10mL蒸馏水，加热溶解，趁热过滤，冷却结晶，抽滤。",w:"一次结晶得到的产品仍含少量NaCl等可溶性杂质，重结晶利用同样的溶解度差异进一步提纯——这是提纯固体混合物的经典方法，但每次重结晶都会损失一部分产品，所以次数要适度。"},
+      {s:"产品放入烘箱低温烘干或用冷风吹干，称量，计算产率。",w:"低温烘干是防止KNO₃受热分解（硝酸盐受热分解放氧）；产率=（实际产量/理论产量）×100%，理论产量按限量反应物(NaNO₃或KCl)计算。"}
+    ],
+    equation:"NaNO₃ + KCl ⇌ KNO₃ + NaCl",
+    pitfalls:[
+      {t:"耗时",x:"小火促溶需持续搅拌5~10分钟；热过滤必须迅速（漏斗不预热则KNO₃在滤纸上提前析出造成损失）；冷却结晶至少15~20分钟（冰水浴可缩短）；重结晶又是一轮完整的溶-滤-冷-滤，总耗时约2个课时。"},
+      {t:"危险",x:"酒精灯和石棉网烫手，热溶液倾倒要防烫伤；NaNO₃、KNO₃都是强氧化剂，加热时严禁与滤纸、乙醇、木屑等可燃物接触，更不能与可燃物混合研磨后加热（有燃烧爆炸风险）。"},
+      {t:"易错",x:"加水量是关键——水多则NaCl不析出、KNO₃也难结晶，水少则NaCl提前析出混入产品；蒸发浓缩时若水分损失过多，NaCl会混入KNO₃；冷却越彻底产率越高；洗涤用水过多会使产品溶解损失；Cl⁻未除尽会使产品发黄或潮湿结块。"}
+    ],
+    note:"分离提纯的理论依据是溶解度与温度的关系：NaCl的溶解度随温度变化小，宜用蒸发结晶；KNO₃的溶解度随温度变化大，宜用冷却结晶；重结晶是提纯固体混合物的经典方法。"
+  },
+  {
+    name:"二氧化碳相对分子质量的测定",
+    keywords:["二氧化碳","相对分子质量","气体定律","阿伏加德罗","称量"],
+    category:"定量分析 · 气体",
+    instruments:["启普发生器(或锥形瓶+长颈漏斗)","150mL锥形瓶(带塞)","分析天平(0.0001g)","温度计","气压计","量筒(500mL)","洗气瓶"],
+    supplies:[],
+    materials:["石灰石(块状) 约20g","盐酸(6mol/L) 约60mL","工业浓硫酸（洗气干燥CO₂用）","蒸馏水"],
+    principle:"根据阿伏加德罗定律，同温同压下同体积气体的质量比等于其摩尔质量之比：M(CO₂)/M(空气)=m(CO₂)/m(空气)。用同一锥形瓶分别称出同体积CO₂和空气的质量，则M(CO₂)=29.00×(m₂-m₁)/(m₃-m₁)，只需天平，不必换算到标准状况。",
+    steps:[
+      {s:"取150mL锥形瓶，洗净烘干，冷至室温，配好瓶塞，称量得m₁。",w:"烘干除去瓶内残留的水（水会增加质量）；必须冷至室温才能称量——热胀冷缩使瓶内空气密度变化，导致称量不准；带塞一起称量，是因为比较的是“瓶+塞”这一整体。"},
+      {s:"装好启普发生器（石灰石+6mol/L盐酸），先通气约5分钟排出装置和锥形瓶内的空气。",w:"锥形瓶内原装有空气，若不排尽，称得的将是CO₂与空气的混合物，使结果偏低；装置内原有的空气同样需要赶尽，所以要通气一段时间。"},
+      {s:"将导管伸入锥形瓶底部，继续通气约5分钟，迅速塞紧瓶塞，称量得m₂。",w:"通到瓶底有利于把空气完全排出；通气5分钟保证瓶内原有空气被CO₂完全取代；迅速塞紧防止CO₂逸出或空气进入，保证称得的是纯净CO₂的质量。"},
+      {s:"启开瓶塞停放约5分钟，让瓶内CO₂自行逸出（被空气取代），塞紧瓶塞，称量得m₃。",w:"停放后瓶内CO₂被空气取代，此时称得的是同体积的空气质量。用同一容器分别称量CO₂和空气，使体积、温度、压强的影响相互抵消——这是本实验“以轻称重”设计的精髓。"},
+      {s:"测定瓶的容积：将锥形瓶装满水，塞紧瓶塞，擦干外壁，称量得m₄；V=(m₄-m₁)/ρ(水)。",w:"由水的质量和该温度下水的密度算出瓶的容积；擦干外壁是防止沾附的水增加质量；塞紧瓶塞才能保证瓶内真正装满水、体积准确。"},
+      {s:"记录室温t(℃)和大气压p(kPa)，查该温度下水的密度和空气密度。",w:"空气和水的密度都随温度变化，查表修正可减小系统误差——这也是为什么强调记录室温和气压。"},
+      {s:"计算CO₂对空气的相对密度、CO₂的相对分子质量，与理论值44.01比较，计算百分误差。",w:"根据阿伏加德罗定律，同温同压下同体积气体的质量比等于其摩尔质量之比，因此不必把体积换算到标准状况；百分误差=（|测定值-理论值|/理论值）×100%，用于评价实验的准确度。"}
+    ],
+    equation:"M(CO₂)=29.00×(m₂-m₁)/(m₃-m₁)；CaCO₃ + 2HCl = CaCl₂ + H₂O + CO₂↑",
+    pitfalls:[
+      {t:"耗时",x:"通气排空气两个阶段共约10分钟；每次称量前必须等待锥形瓶冷至室温（热胀冷缩影响称量准确性，用手心捂热瓶身就会造成明显误差）；装满水测容积又要5分钟；总耗时约40分钟。"},
+      {t:"危险",x:"6mol/L盐酸有腐蚀性；若使用CO₂钢瓶，必须通过减压阀和1000mL缓冲瓶（钢瓶和减压阀温度过低时称量会失准）；启普发生器添加酸液时防止喷溅。"},
+      {t:"易错",x:"瓶塞密封不严会漏气，导致m₂、m₃都失准；称量时瓶外壁必须干燥；酸雾随CO₂进入会使m₂偏大、结果偏高；两次称量的温度要一致；通气时间不足则残留空气使结果偏低；空气密度要按实验时的温度压强修正。"}
+    ],
+    note:"本实验是“以轻称重”的巧妙设计：用同一容器分别称量CO₂和空气，使体积、温度、压强的影响相互抵消；误差主要来自称量和漏气，操作认真时相对误差可小于2%。"
+  },
+  {
+    name:"双氧水中H₂O₂含量的测定——高锰酸钾法",
+    keywords:["双氧水","过氧化氢","高锰酸钾","氧化还原滴定","标定"],
+    category:"定量分析 · 氧化还原滴定",
+    instruments:["酸式滴定管(50mL)","锥形瓶(250mL)","移液管(10mL、25mL)","容量瓶(100mL)","烧杯","水浴锅","玻璃砂漏斗","量筒","棕色试剂瓶"],
+    supplies:[],
+    materials:["KMnO₄(固，AR) 约1.7g","Na₂C₂O₄(基准试剂，预先烘干) 0.15~0.20g","H₂SO₄(3mol/L)","双氧水样品(约3%) 10.00mL","蒸馏水"],
+    principle:"酸性条件下紫红色的MnO₄⁻被H₂O₂还原为近无色的Mn²⁺，稍过量的MnO₄⁻使溶液显红色，可作自身指示剂：5H₂O₂ + 2MnO₄⁻ + 6H⁺ = 2Mn²⁺ + 8H₂O + 5O₂↑。KMnO₄标准液用基准试剂Na₂C₂O₄标定：2MnO₄⁻ + 5C₂O₄²⁻ + 16H⁺ = 2Mn²⁺ + 10CO₂↑ + 8H₂O。取样核算：10mL约3%的双氧水(约0.88mol/L，含H₂O₂约0.0088mol)稀释至100mL后取25.00mL滴定，约消耗0.02mol/L KMnO₄溶液44mL。",
+    steps:[
+      {s:"配制KMnO₄溶液(0.02mol/L)：称取约1.7g KMnO₄溶于500mL蒸馏水，盖上表面皿加热至沸并保持微沸约1小时（或放置7~10天），用玻璃砂漏斗过滤除去MnO₂，贮于棕色瓶中。",w:"KMnO₄试剂中含微量还原性杂质，会缓慢消耗KMnO₄使其浓度变化，煮沸（或长期放置）可让这些杂质完全反应后再标定，浓度才稳定；贮藏过程中分解产生的MnO₂要滤除，因为它会催化KMnO₄继续分解；棕色瓶避光也是为了防止分解。"},
+      {s:"标定：准确称取0.15~0.20g预先在110℃干燥2小时的Na₂C₂O₄于250mL锥形瓶中，加40mL蒸馏水和10mL 3mol/L H₂SO₄，加热至75~85℃，趁热用KMnO₄溶液滴定。第一滴红色褪去后可加快滴定，近终点时逐滴加入，溶液呈微红色且30秒不褪即为终点；平行测定3份。",w:"Na₂C₂O₄是基准试剂（组成恒定、纯度高），用来确定KMnO₄的准确浓度；75~85℃是为了加快反应（低于60℃反应太慢，高于90℃草酸会分解）；微红色30秒不褪说明到达终点——稍过量的MnO₄⁻使溶液显红色，可作自身指示剂，无需另加指示剂。"},
+      {s:"H₂O₂含量测定：用移液管准确吸取10.00mL双氧水样品，转入100mL容量瓶，加水稀释至刻度，摇匀。",w:"双氧水浓度较高（约3%），直接滴定消耗溶液体积过大、误差大，先稀释可减小滴定误差；取样后应尽快测定，因为H₂O₂不稳定、会缓慢分解。"},
+      {s:"准确移取25.00mL稀释液3份，分别置于250mL锥形瓶中，各加5mL 3mol/L H₂SO₄，用KMnO₄标准溶液滴定至微红色且30秒不褪为终点。",w:"反应必须在酸性条件下进行（酸性不足反应不完全且会生成MnO₂沉淀）；平行测定3份取平均，减小偶然误差；计算结果时要计入稀释倍数（10.00mL稀释至100mL，取出25.00mL，稀释倍数为10）。"}
+    ],
+    equation:"5H₂O₂ + 2MnO₄⁻ + 6H⁺ = 2Mn²⁺ + 8H₂O + 5O₂↑；2MnO₄⁻ + 5C₂O₄²⁻ + 16H⁺ = 2Mn²⁺ + 10CO₂↑ + 8H₂O",
+    pitfalls:[
+      {t:"耗时",x:"KMnO₄溶液配制后不能立即标定，要放置7~10天（或煮沸1小时）并过滤MnO₂，这是整个实验最“等不起”的环节，通常要提前一周准备；标定和水样测定各需20~30分钟。"},
+      {t:"危险",x:"KMnO₄是强氧化剂，固体不可与滤纸、乙醇、甘油等有机物接触或研磨（有起火风险）；稀释浓硫酸防飞溅；双氧水有腐蚀性和氧化性，溅到皮肤会发痒脱色；KMnO₄溶液会染污皮肤和台面，操作要小心。"},
+      {t:"易错",x:"酸度必须用硫酸控制（盐酸中的Cl⁻会被MnO₄⁻氧化，硝酸有还原性干扰），酸量不足反应不完全；标定温度要控制在75~85℃（低于60℃反应太慢，高于90℃H₂C₂O₄分解）；滴定速度要先慢（第一滴）、后快、近终点再慢；KMnO₄会腐蚀碱式滴定管的橡皮管，必须使用酸式滴定管；双氧水稀释后不能久放（易分解），取样后应尽快测定。"}
+    ],
+    note:"KMnO₄法的优点是自身指示终点、氧化能力强；缺点是标准液不稳定，需现标现用。该法在工业上用于双氧水质量检验，在生物化学中用于测定过氧化氢酶活性。"
+  },
+  {
+    name:"自来水总硬度的测定——配位滴定法",
+    keywords:["水的硬度","配位滴定","EDTA","铬黑T","钙","镁"],
+    category:"定量分析 · 配位滴定",
+    instruments:["酸式滴定管(50mL)","锥形瓶(250mL)","移液管(25mL、50mL)","容量瓶(250mL)","烧杯(100mL)","台秤","分析天平","电炉"],
+    supplies:[],
+    materials:["EDTA二钠盐(AR) 约1.6g","CaCO₃(基准试剂，120℃干燥) 0.3~0.4g","Mg-EDTA溶液 几滴（提高终点敏锐度）","盐酸(1:1)","三乙醇胺(20%) 3mL","Na₂S溶液(2%)","氨性缓冲液(pH≈10) 5mL","K-B指示剂（酸性铬蓝K-萘酚绿B） 1滴"],
+    principle:"EDTA（乙二胺四乙酸二钠，简写H₂Y²⁻）与Ca²⁺、Mg²⁺按1:1形成稳定配合物：Ca²⁺ + H₂Y²⁻ = CaY²⁻ + 2H⁺。pH≈10时以K-B（铬黑T类）为指示剂，指示剂与Ca²⁺、Mg²⁺形成酒红色配合物；终点时EDTA夺取金属离子，游离指示剂显蓝绿色。总硬度(以CaO计，mg/L)=c(EDTA)·V(EDTA)·M(CaO)×1000/V(水样)。",
+    steps:[
+      {s:"配制EDTA标准液(0.01mol/L)：称取约1.6g EDTA二钠盐溶于500mL蒸馏水（可微热促溶），加几滴Mg-EDTA溶液。",w:"EDTA在常温水中溶解较慢，微热并搅拌可加速溶解；加入Mg-EDTA是为了提高终点敏锐度——当水样中Mg²⁺含量较少时，加入的Mg²⁺与指示剂显色更明显，终点颜色变化更清晰。"},
+      {s:"标定：准确称取0.3~0.4g基准CaCO₃，加10mL盐酸(1:1)溶解，煮沸赶尽CO₂，冷却后转入250mL容量瓶定容；移取25.00mL于锥形瓶，加约25mL水、几滴Mg-EDTA、5mL氨性缓冲液(pH≈10)和1滴K-B指示剂，用EDTA滴定至由酒红色变为蓝绿色；平行3份。",w:"EDTA标准液常用基准CaCO₃标定（CaCO₃组成恒定、稳定、易干燥）；用盐酸溶解并煮沸赶CO₂，是防止残留的CO₂形成碳酸盐消耗EDTA造成误差；缓冲液维持pH≈10，在此酸度下EDTA与Ca²⁺、Mg²⁺的配位反应才完全，指示剂变色也最敏锐。"},
+      {s:"水样测定：先将自来水放流数分钟，用移液管准确移取50.00mL于锥形瓶，加3mL 20%三乙醇胺、5mL氨性缓冲液、1滴K-B指示剂，用EDTA标准液滴定至酒红色变蓝绿色；平行3份。",w:"三乙醇胺掩蔽Fe³⁺、Al³⁺等干扰离子，防止它们也与EDTA配位或“封闭”指示剂而使终点无法判断；放流数分钟是排去管道中滞留的死水；平行测定取平均减小偶然误差。"},
+      {s:"计算水的总硬度，以CaO mg/L表示，并判断水样硬度等级。",w:"水的硬度表示水中Ca²⁺、Mg²⁺的总量，换算成CaO是为了有统一的比较标准（1L水中含10mg CaO为1度）；由消耗EDTA的体积和浓度即可算出Ca²⁺、Mg²⁺的总物质的量。"}
+    ],
+    equation:"Ca²⁺ + H₂Y²⁻ = CaY²⁻ + 2H⁺；Mg²⁺ + H₂Y²⁻ = MgY²⁻ + 2H⁺；MgIn⁻(酒红) + H₂Y²⁻ → MgY²⁻ + HIn²⁻(蓝绿) + 2H⁺",
+    pitfalls:[
+      {t:"耗时",x:"EDTA溶解较慢（可加热搅拌加速）；标定一份约10分钟，水样三份平行测定约30分钟，加上溶液配制，总耗时约1.5个课时；滴定近终点时半滴操作要细致。"},
+      {t:"危险",x:"氨性缓冲液有刺激性氨味，配制和滴定应在通风处进行；酸碱废液中和后排放；加热溶解CaCO₃和EDTA时注意防烫。"},
+      {t:"易错",x:"三乙醇胺必须在酸性条件下加入（碱性下掩蔽失效）；缓冲液pH必须保持在10左右（pH过低EDTA配位能力弱、终点拖尾，pH过高Mg²⁺会生成Mg(OH)₂沉淀）；K-B指示剂中两种染料比例要适当，终点颜色变化要事先熟悉（可先用蒸馏水做空白对照）；水样量应根据预估硬度调整（硬水可少取，否则滴定体积过大）；滴定速度要慢，近终点时半滴滴加。"}
+    ],
+    note:"生活饮用水卫生标准规定总硬度（以CaCO₃计）不超过450mg/L；水的硬度分为暂时硬度（碳酸氢盐，加热可分解除去）和永久硬度（钙镁的硫酸盐、氯化物等）。"
+  },
+  {
+    name:"漂白粉中有效氯含量的测定——碘量法",
+    keywords:["漂白粉","有效氯","碘量法","硫代硫酸钠","氧化还原"],
+    category:"定量分析 · 氧化还原滴定",
+    instruments:["分析天平","称量瓶","研钵","烧杯(250mL)","容量瓶(250mL)","移液管(20mL、25mL)","碘量瓶(或磨口锥形瓶)","酸式滴定管(棕色，50mL)","量筒"],
+    supplies:[],
+    materials:["漂白粉样品（研细混匀）","KI(固，配成10%溶液)","H₂SO₄(3mol/L)","Na₂S₂O₃·5H₂O(固体，AR)（配制0.1mol/L标准液）","淀粉指示剂(1%)","K₂Cr₂O₇(基准试剂)"],
+    principle:"漂白粉中的次氯酸盐在酸性条件下氧化I⁻析出I₂：ClO⁻ + 2I⁻ + 2H⁺ = Cl⁻ + I₂ + H₂O；析出的I₂用Na₂S₂O₃标准液滴定：I₂ + 2S₂O₃²⁻ = 2I⁻ + S₄O₆²⁻。有效氯含量以Cl₂计。Na₂S₂O₃标准液用基准试剂K₂Cr₂O₇标定。",
+    steps:[
+      {s:"配制并标定Na₂S₂O₃溶液(0.1mol/L)：用新煮沸冷却的蒸馏水配制，加少量Na₂CO₃，贮于棕色瓶，放置2周后标定。",w:"Na₂S₂O₃易被水中的溶解氧氧化、被CO₂酸化而分解，用煮沸冷却的水并加少量Na₂CO₃（保持弱碱性）可提高稳定性；新配溶液浓度不稳定，放置约2周后再标定，结果才可靠。"},
+      {s:"标定：准确称取0.15~0.18g K₂Cr₂O₇于碘量瓶中，加25mL水、0.5g KI和5mL 3mol/L H₂SO₄，盖塞摇匀，暗处放置5分钟，加100~150mL水稀释，用Na₂S₂O₃滴定至浅黄色，加2mL淀粉指示剂，继续滴定至蓝色刚好消失（变为亮绿色Cr³⁺）；平行3份。",w:"K₂Cr₂O₇是基准试剂，在酸性条件下定量氧化I⁻析出I₂，再用Na₂S₂O₃滴定I₂即可标定Na₂S₂O₃的浓度；暗处放置是防止I⁻被空气中的氧氧化（光照会加速）；淀粉指示剂在近终点才加入，是因为加入过早时碘会被淀粉牢固吸附，使蓝色迟迟不褪、终点拖后。"},
+      {s:"样品处理：漂白粉研细混匀，准确称取试样，加少许蒸馏水调成糊状，上层清液定量转入250mL容量瓶，洗涤研钵并稀释至刻度，摇匀。",w:"漂白粉各部位组成不均匀（易吸潮结块），研细混匀才能保证取样的代表性；配成悬浊液定容后，每次取一定体积测定，减小取样误差。"},
+      {s:"测定：准确移取20.00mL试液于碘量瓶，加6mL 3mol/L H₂SO₄和10mL 10% KI溶液，加盖摇匀，暗处放置5分钟；取出加20mL蒸馏水稀释，立即用Na₂S₂O₃标准液滴定至淡黄色，加2mL淀粉溶液，继续滴定至蓝色刚好消失；平行3次。",w:"酸性条件下漂白粉中的ClO⁻定量氧化I⁻析出I₂（ClO⁻+2I⁻+2H⁺=Cl⁻+I₂+H₂O），由I₂的量算出ClO⁻的量；暗处放置同上；淀粉近终点加入同上；碘易挥发，所以滴定要快、碘量瓶要盖塞。"},
+      {s:"计算有效氯含量（以Cl₂的质量分数表示）。",w:"漂白粉的漂白能力用“有效氯”表示，即与次氯酸相当的那部分氯；由滴定消耗的Na₂S₂O₃量算出I₂的量，进而算出ClO⁻的量，再换算为Cl₂计。"}
+    ],
+    equation:"ClO⁻ + 2I⁻ + 2H⁺ = Cl⁻ + I₂ + H₂O；I₂ + 2S₂O₃²⁻ = 2I⁻ + S₄O₆²⁻；Cr₂O₇²⁻ + 6I⁻ + 14H⁺ = 2Cr³⁺ + 3I₂ + 7H₂O",
+    pitfalls:[
+      {t:"耗时",x:"Na₂S₂O₃溶液要放置2周才能标定，必须提前准备；暗处反应5分钟、滴定约10分钟，加上称样和溶液配制，总耗时约1小时。"},
+      {t:"危险",x:"漂白粉有刺激性和腐蚀性，分解释放氯气，应在通风处操作并避免吸入；KI遇酸会生成碘蒸气，碘量瓶要盖好玻璃塞；废液回收处理，不要倒入水槽。"},
+      {t:"易错",x:"淀粉指示剂必须在近终点（溶液呈浅黄色）时加入，加入过早则碘被淀粉牢固吸附，蓝色迟迟不褪；碘易挥发，滴定宜快、温度宜低、碘量瓶要盖塞；暗处放置是为了防止I⁻被空气中的氧氧化；Na₂S₂O₃溶液要用煮沸冷却水配制并加Na₂CO₃，防止分解；漂白粉不均匀，取样一定要研细混匀，否则平行结果偏差大。"}
+    ],
+    note:"碘量法分为直接碘量法（用I₂标准液滴定还原剂）和间接碘量法（氧化剂氧化I⁻析出I₂再滴定），本实验属于间接碘量法；漂白粉应密封避光保存，其有效氯含量会随时间逐渐下降。"
+  },
+  {
+    name:"硫酸亚铁铵的制备",
+    keywords:["硫酸亚铁铵","莫尔盐","制备","复盐","水浴"],
+    category:"无机化合物的制备",
+    instruments:["台秤","锥形瓶(250mL)","水浴锅","抽滤瓶","布氏漏斗","蒸发皿","表面皿","量筒(50mL)","烧杯","比色管(25mL)"],
+    supplies:["滤纸"],
+    materials:["铁屑(洁净) 约3g","(NH₄)₂SO₄(固) 约6g","H₂SO₄(3mol/L) 20mL","Na₂CO₃溶液(10%) 20mL","KSCN饱和溶液 1mL","HCl(3mol/L) 2mL","蒸馏水"],
+    principle:"铁屑与稀硫酸反应生成硫酸亚铁：Fe + H₂SO₄ = FeSO₄ + H₂↑；硫酸亚铁与硫酸铵在水溶液中形成溶解度较小的复盐——浅蓝绿色的硫酸亚铁铵（莫尔盐）：FeSO₄ + (NH₄)₂SO₄ + 6H₂O = FeSO₄·(NH₄)₂SO₄·6H₂O。复盐比简单的亚铁盐更稳定，不易被氧化。用量核算：3g铁屑(0.054mol)理论上生成FeSO₄约8.2g，按质量比约1:0.75配(NH₄)₂SO₄约6g，莫尔盐理论产量约21g。",
+    steps:[
+      {s:"铁屑净化：称取3g铁屑放入锥形瓶，加20mL 10% Na₂CO₃溶液，水浴加热约10分钟，用倾泻法倒去碱液，蒸馏水洗净铁屑。",w:"铁屑表面沾有油污，会阻碍铁与酸的反应并污染产品；热的碱溶液可使油污皂化除去；用倾泻法倒液是避免铁屑随液体倒出。"},
+      {s:"制备FeSO₄：向锥形瓶中加入20mL 3mol/L H₂SO₄，水浴加热约45分钟（经常摇动，随时补充蒸发掉的水分，保持反应液pH小于2），使铁屑完全反应。",w:"水浴加热温度可控且均匀；经常摇动使铁屑与酸充分接触、反应完全；补充蒸发的水分是防止水分蒸干导致FeSO₄提前结晶析出；保持酸性是抑制Fe²⁺的水解和被空气中的氧氧化。"},
+      {s:"按FeSO₄与(NH₄)₂SO₄质量比约1:0.75，称取约6g (NH₄)₂SO₄溶于适量水。",w:"莫尔盐中FeSO₄与(NH₄)₂SO₄按等物质的量结合，先按参加反应的铁量算出FeSO₄的理论产量，再据此比例配料；(NH₄)₂SO₄稍过量有利于复盐充分析出、提高产率。"},
+      {s:"将FeSO₄溶液与(NH₄)₂SO₄溶液混合，转入蒸发皿中水浴蒸发浓缩至表面出现晶膜，冷却结晶，减压过滤，用少量冰水洗涤晶体，抽干。",w:"出现晶膜说明溶液已达饱和，此时停止加热可防止过度浓缩析出杂质或失去结晶水；冷却使溶解度较小的莫尔盐充分析出；用冰水洗涤可减少产品溶解损失。"},
+      {s:"产品检验：称取1.0g产品于25mL比色管中，加15mL预先煮沸除氧的蒸馏水、2mL 3mol/L HCl和1mL饱和KSCN溶液，摇匀，与标准液比色。",w:"产品中若含Fe³⁺，遇SCN⁻显血红色；用预先煮沸除氧的水是防止水中溶解氧氧化Fe²⁺造成误判；与标准比色可半定量判断Fe³⁺含量，从而评价产品的抗氧化变质程度。"},
+      {s:"称量产品，计算产率；产品密封避光保存。",w:"莫尔盐在空气中比一般亚铁盐稳定，但仍需密封避光保存，防止Fe²⁺被缓慢氧化。"}
+    ],
+    equation:"Fe + H₂SO₄ = FeSO₄ + H₂↑；FeSO₄ + (NH₄)₂SO₄ + 6H₂O = FeSO₄·(NH₄)₂SO₄·6H₂O",
+    pitfalls:[
+      {t:"耗时",x:"铁屑净化10分钟+反应45分钟+蒸发浓缩20分钟+冷却结晶30分钟，是典型的“长流程”实验，总耗时约2.5个课时；反应期间要经常摇动锥形瓶并补水，不能离人。"},
+      {t:"危险",x:"铁与硫酸反应放出氢气，水浴加热时氢气会在锥形瓶内聚集，必须远离明火——严禁在锥形瓶旁边点燃酒精灯；碱液和酸液防溅；蒸发浓缩后期皿体很烫，取放用坩埚钳。"},
+      {t:"易错",x:"反应液要保持酸性（pH小于2），防止Fe²⁺水解和被氧化；铁屑要稍过量（保证Fe²⁺不被氧化）；蒸发不可过干（出现晶膜即停，过度浓缩会析出FeSO₄杂质并使晶体发黄）；产品若显黄褐色说明Fe³⁺超标；检验用的蒸馏水要预先煮沸除氧，否则会误判；晶体用少量冰水洗涤以减少溶解损失。"}
+    ],
+    note:"莫尔盐[(NH₄)₂Fe(SO₄)₂·6H₂O]在空气中比一般亚铁盐稳定，是定量分析中配制Fe²⁺标准液的常用基准物质；含铁废液应集中回收处理。"
+  },
+  {
+    name:"五水硫酸铜的制备与提纯",
+    keywords:["五水硫酸铜","胆矾","制备","重结晶","铜","碘量法"],
+    category:"无机化合物的制备",
+    instruments:["蒸发皿","表面皿","电炉(或煤气灯)","水浴锅","抽滤瓶","布氏漏斗","研钵","烧杯","量筒","台秤","分析天平","烘箱(或热分析仪)"],
+    supplies:["滤纸"],
+    materials:["铜屑(或废铜粉) 约3g","HNO₃(浓) 约6mL","H₂SO₄(3mol/L) 约17mL","H₂O₂溶液(3%)","NaF(0.5mol/L)","KI(1mol/L)","淀粉溶液(0.2%)","KSCN溶液(10%)","HCl(1:1)","氨水(1:1)","HAc(1:1)","H₃PO₄(浓)","Na₂S₂O₃标准溶液(0.1mol/L)","蒸馏水 约10mL"],
+    principle:"铜不溶于非氧化性酸，但在硫酸存在下可被浓硝酸氧化溶解：Cu + 2HNO₃ + H₂SO₄ = CuSO₄ + 2NO₂↑ + 2H₂O。硫酸铜的溶解度随温度变化较大，可用蒸发浓缩、冷却结晶和重结晶提纯。五水硫酸铜(CuSO₄·5H₂O)为蓝色晶体，受热逐步失去结晶水（加热至约250℃变为白色无水CuSO₄）。铜含量可用碘量法测定：2Cu²⁺ + 4I⁻ = 2CuI↓ + I₂。",
+    steps:[
+      {s:"称取3g铜屑放入蒸发皿，灼烧至表面呈黑色，自然冷却。",w:"灼烧可除去附在铜屑表面的油污（油污会阻碍反应并使产品混入有机物而变黑）；若铜屑干净无油污，此步可略去。"},
+      {s:"加11mL 3mol/L H₂SO₄，在通风橱中缓慢、分批地加入5mL浓HNO₃。",w:"铜不溶于非氧化性酸，浓硝酸提供氧化性把铜氧化为Cu²⁺，硫酸提供SO₄²⁻生成CuSO₄；反应剧烈放热并放出红棕色有毒的NO₂，所以在通风橱中缓慢分批加酸，防止反应过猛冲溢。"},
+      {s:"待反应缓和后盖上表面皿，水浴加热；如需补酸，补加约6mL 3mol/L H₂SO₄和1mL浓HNO₃（尽量少加）。",w:"水浴加热使反应平稳持续进行；补酸量根据反应情况而定，尽量少加硝酸——NO₃⁻会混入产品，且增加氮氧化物污染。"},
+      {s:"待铜屑近于完全溶解后，趁热将溶液转入洗净的蒸发皿，水浴加热浓缩至表面出现晶体膜，冷却结晶，抽滤得粗产品。",w:"趁热转移是防止提前结晶造成损失；浓缩至出现晶体膜即停，过度加热会使CuSO₄·5H₂O失去结晶水而发白；冷却时溶解度随温度降低显著减小的CuSO₄·5H₂O充分析出。"},
+      {s:"重结晶：将粗产品按每克加约1.2mL水的比例溶于水，水浴加热溶解，趁热过滤，冷却结晶，抽干，称量。",w:"重结晶除去可溶性杂质；用水量按产品在该温度下的溶解度计算，过多则晶体析出少、过少则溶解不完全；趁热过滤防止提前结晶损失。"},
+      {s:"碘量法测铜（选做）：样品溶解后，加NaF掩蔽Fe³⁺并控制pH约3.4~4.0，加过量KI，析出的I₂用Na₂S₂O₃标准液滴定，近终点时加KSCN。",w:"弱酸性条件下Cu²⁺定量氧化I⁻析出I₂（2Cu²⁺+4I⁻=2CuI↓+I₂），用Na₂S₂O₃滴定I₂即可算出铜含量；NaF掩蔽Fe³⁺防止干扰；近终点加KSCN使CuI转化为CuSCN，可释放被CuI吸附的碘，减小滴定误差。"}
+    ],
+    equation:"Cu + 2HNO₃ + H₂SO₄ = CuSO₄ + 2NO₂↑ + 2H₂O；2Cu²⁺ + 4I⁻ = 2CuI↓ + I₂；I₂ + 2S₂O₃²⁻ = 2I⁻ + S₄O₆²⁻；CuI + SCN⁻ = CuSCN↓ + I⁻",
+    pitfalls:[
+      {t:"耗时",x:"溶解反应约20~30分钟（中间可能要补酸）；浓缩和结晶各约20分钟；重结晶又需一轮，总耗时约2个课时。"},
+      {t:"危险",x:"浓硝酸与铜反应放出大量红棕色有毒的NO₂，必须在通风橱中进行；浓硝酸有强腐蚀性，要戴护目镜和手套；铜盐有毒，废液必须回收，不能倒入水槽；水浴加热防烫伤。"},
+      {t:"易错",x:"硝酸尽量少加（NO₃⁻会混入产品且污染大）；浓缩至“表面出现晶体膜”即停，过度加热会失去结晶水使产品发白；重结晶用水量要按1.2mL/g计算，过多则晶体析出少；产品发白说明已失去部分结晶水（风化），应密封保存；碘量法测铜时pH要控制在3.4~4.0并用NaF掩蔽Fe³⁺。"}
+    ],
+    note:"CuSO₄·5H₂O是蓝色晶体，无水CuSO₄为白色粉末，遇水变蓝，可用于检验水的存在；胆矾在农业上用于配制波尔多液（杀虫剂）。"
+  },
+  {
+    name:"碳酸钠的制备及含量测定——双指示剂法",
+    keywords:["碳酸钠","索尔维法","氨碱法","碳酸氢钠","双指示剂","混合碱"],
+    category:"无机化合物的制备 · 定量分析",
+    instruments:["电磁搅拌器","吸滤瓶","布氏漏斗","坩埚","坩埚钳","泥三角","研钵","分析天平","酸式滴定管(50mL)","锥形瓶(250mL)","移液管(25mL)","容量瓶(250mL)","烧杯","量筒"],
+    supplies:["滤纸"],
+    materials:["粗盐饱和溶液 20mL","BaCl₂溶液(6mol/L)","NaOH饱和溶液","Na₂CO₃饱和溶液","NH₄HCO₃(固) 约8.5g","HCl标准液(0.1mol/L)","酚酞指示剂","甲基橙指示剂"],
+    principle:"氨碱法（索尔维法）制碱：向氨化的饱和盐水中加入NH₄HCO₃，30~35℃时溶解度较小的NaHCO₃先析出：NH₃ + CO₂ + H₂O + NaCl = NaHCO₃↓ + NH₄Cl；碳酸氢钠受热分解得碳酸钠：2NaHCO₃ ≜(300℃) Na₂CO₃ + H₂O + CO₂↑。产品用双指示剂法测定：酚酞指示第一终点（Na₂CO₃→NaHCO₃，耗酸V₁），甲基橙指示第二终点（NaHCO₃→H₂CO₃，累计耗酸V₂），由两步耗酸量分别计算Na₂CO₃与NaHCO₃的含量。",
+    steps:[
+      {s:"除杂：取20mL粗盐饱和溶液，依次用6mol/L BaCl₂除SO₄²⁻、饱和NaOH除Mg²⁺、饱和Na₂CO₃除Ca²⁺和过量Ba²⁺，盐酸调pH至7左右，抽滤，得精制饱和食盐水。",w:"原料粗盐中的Ca²⁺、Mg²⁺、SO₄²⁻会混入产品影响纯度，除杂原理与粗盐提纯相同；顺序不能颠倒——Na₂CO₃必须在BaCl₂之后加入，才能同时除去Ca²⁺和过量的Ba²⁺。"},
+      {s:"氨化：滤液中加入饱和氨水和饱和Na₂CO₃溶液，调节pH至11左右。",w:"氨化的目的是让NaCl溶液吸收足量的NH₃；碱性环境有利于后续吸收CO₂（酸性气体会被碱液吸收），并提供反应所需的NH₃。"},
+      {s:"碳酸化：加入约8.5g NH₄HCO₃（分5次加入），在电磁搅拌器上搅拌，控制温度30~35℃，恒温搅拌约30分钟，冷却后抽滤得NaHCO₃晶体；母液回收。",w:"总反应NH₃+CO₂+H₂O+NaCl=NaHCO₃↓+NH₄Cl。30~35℃时NaHCO₃溶解度相对较小、NaCl和NH₄Cl溶解度较大，NaHCO₃优先析出；温度过高NH₄HCO₃分解加剧，温度过低反应太慢；分次加入并搅拌能使反应充分、晶体颗粒较大。"},
+      {s:"灼烧：NaHCO₃晶体放入坩埚，先用小火烘干，再于300℃灼烧30分钟，得Na₂CO₃产品，称量。",w:"2NaHCO₃≜Na₂CO₃+H₂O+CO₂↑；先小火烘干再高温灼烧，是防止水分突然汽化使固体飞溅；300℃并保持30分钟保证分解完全。"},
+      {s:"双指示剂法测定：准确称取3份样品（每份约0.12g）于250mL锥形瓶中，各加50mL蒸馏水溶解，加1~2滴酚酞，用0.1mol/L HCl标准液滴定至红色刚好消失（第一终点，记V₁）；再加2滴甲基橙，继续用HCl滴定至由黄变橙（第二终点，记总体积V₂）。",w:"Na₂CO₃与盐酸分两步反应：Na₂CO₃+HCl=NaHCO₃+NaCl（酚酞变色，pH≈8）和NaHCO₃+HCl=NaCl+H₂O+CO₂↑（甲基橙变色，pH≈4）；两个终点消耗的酸量不同，据此可分别算出Na₂CO₃和NaHCO₃的含量——这就是双指示剂法能测混合碱组成的原因。第一终点要慢滴并充分振荡，防止局部酸度过大使CO₂提前逸出造成V₁偏小。"},
+      {s:"计算：w(Na₂CO₃)=c(HCl)·V₁·M(Na₂CO₃)/(m·1000)×100%；w(NaHCO₃)=c(HCl)·(V₂-V₁)·M(NaHCO₃)/(m·1000)×100%；并计算产率。",w:"第一终点消耗的酸对应于把Na₂CO₃中和到NaHCO₃，其物质的量等于Na₂CO₃的物质的量；第一终点到第二终点消耗的酸对应于中和原有的和第一步生成的NaHCO₃总量，减去第一步生成的量，才是样品中原有NaHCO₃的量。产率以实际产品质量与理论产量之比计算。"}
+    ],
+    equation:"NH₃ + CO₂ + H₂O + NaCl = NaHCO₃↓ + NH₄Cl；2NaHCO₃ ≜(300℃) Na₂CO₃ + H₂O + CO₂↑；Na₂CO₃ + HCl = NaHCO₃ + NaCl；NaHCO₃ + HCl = NaCl + H₂O + CO₂↑",
+    pitfalls:[
+      {t:"耗时",x:"除杂约30分钟；碳酸化恒温搅拌30分钟；灼烧30分钟以上；测定三份约30分钟——这是最综合、最耗时的实验之一，约需3个课时，务必提前规划好各环节时间。"},
+      {t:"危险",x:"灼烧坩埚温度很高（300℃），必须用坩埚钳操作，不能直接放在桌面上（应放在泥三角或石棉网上冷却）；氨水有刺激性气味，应在通风处操作；酸碱防溅。"},
+      {t:"易错",x:"碳酸化温度必须严格控制在30~35℃（高于35℃则NH₄HCO₃分解加剧，低于30℃反应太慢）；NH₄HCO₃要分次加入并不断搅拌；第一终点（酚酞变色）一定要慢滴并充分振荡，防止CO₂逸出造成V₁偏小；第二终点前可将溶液加热煮沸赶除溶解的CO₂，冷却后再细滴，颜色变化更敏锐；产品易吸潮，称量要快。"}
+    ],
+    note:"双指示剂法可同时测定混合碱（Na₂CO₃+NaHCO₃、Na₂CO₃+NaOH等）的组成，是工业分析常用方法；索尔维法实现了碳酸钠的连续化生产，但母液中的CaCl₂废液处理是难题（现代多用联合制碱法）。"
+  },
+  {
+    name:"高锰酸钾的制备及纯度测定",
+    keywords:["高锰酸钾","KMnO4","制备","碱熔","歧化","氧化还原"],
+    category:"无机化合物的制备",
+    instruments:["台秤","铁坩埚(带盖)","泥三角","坩埚钳","铁杵","烧杯(1L)","布氏漏斗","抽滤瓶","循环水泵","玻璃砂漏斗(3号)","表面皿","真空干燥器","CO₂钢瓶(或启普发生器)","酸式滴定管(50mL)","锥形瓶","移液管(25mL)","容量瓶(250mL)"],
+    supplies:["石棉纤维（过滤用）"],
+    materials:["MnO₂(固) 2.5g","KOH(固) 4g","KClO₃(固) 2g","CO₂(钢瓶或自制)","草酸标准溶液(0.05mol/L)","H₂SO₄(1mol/L)","蒸馏水"],
+    principle:"在强碱性介质中，KClO₃将MnO₂氧化为绿色的锰酸钾：3MnO₂ + KClO₃ + 6KOH ≜(高温) 3K₂MnO₄ + 3H₂O + KCl；锰酸钾在碱性减弱（通入CO₂降低pH）时发生歧化，生成紫红色的高锰酸钾：3K₂MnO₄ + 2CO₂ = 2KMnO₄ + MnO₂↓ + 2K₂CO₃。减压过滤除去MnO₂后，将KMnO₄溶液蒸发浓缩、结晶即得产品。产品纯度可用草酸滴定法测定。",
+    steps:[
+      {s:"碱熔氧化：将2g KClO₃和4g KOH固体混合均匀，放入铁坩埚；先用小火加热熔融，再将2.5g MnO₂分三次加入，每次加入后用铁杵搅拌均匀，然后加大火力使固相熔融，并经常捣碎以防粘底；待反应物呈颗粒状后停止加热。",w:"强碱性条件下KClO₃把Mn(Ⅳ)氧化为Mn(Ⅵ)（绿色的K₂MnO₄）；MnO₂分次加入并搅拌捣碎，是防止一次加入导致反应过猛溢出，同时保证反应完全；用铁坩埚是因为熔融的强碱会腐蚀瓷坩埚和玻璃，而铁坩埚耐碱腐蚀。"},
+      {s:"浸取：坩埚冷却后放入盛有200mL蒸馏水的烧杯中，加热搅拌使固体尽量溶解，得深绿色的K₂MnO₄溶液。",w:"K₂MnO₄溶于水呈深绿色；加热促进溶解；必须等坩埚冷却后再放入水中——热坩埚遇冷水会炸裂。"},
+      {s:"歧化（精制）：向溶液中通入CO₂（钢瓶CO₂经减压阀，或用启普发生器自制），至溶液由绿色变为紫红色（无绿色残留）即停止；滤去MnO₂沉淀。",w:"K₂MnO₄在强碱性中稳定，通入CO₂消耗OH⁻、降低pH，使歧化反应向生成KMnO₄的方向进行（3K₂MnO₄+2CO₂=2KMnO₄+MnO₂+2K₂CO₃）；紫红色出现且绿色褪尽说明歧化完全；滤去MnO₂沉淀防止混入产品使产品发黑。"},
+      {s:"蒸发浓缩至约30~60mL，冷却结晶，抽滤（可用玻璃砂漏斗）。",w:"蒸发提高浓度使KMnO₄析出；浓缩过度晶体不纯（杂质一起析出），浓缩不足则产量低——出现晶膜即可停止。"},
+      {s:"产品置于表面皿上，在30℃下干燥1~2小时（或真空干燥），称量；留取0.5~1g供纯度测定用。",w:"KMnO₄约240℃即分解，且受热或光照会缓慢分解放氧，所以只能低温干燥并避光保存；真空干燥可进一步降低干燥温度。"},
+      {s:"纯度测定（草酸法）：用草酸标准溶液(0.05mol/L)在酸性条件下滴定KMnO₄，按反应计量关系计算纯度。",w:"酸性介质中MnO₄⁻被草酸还原为Mn²⁺（2MnO₄⁻+5H₂C₂O₄+6H⁺=2Mn²⁺+10CO₂+8H₂O），由消耗草酸的量算出KMnO₄的量；微过量的KMnO₄使溶液显红色，可作终点判断（自身指示剂）。"}
+    ],
+    equation:"3MnO₂ + KClO₃ + 6KOH ≜ 3K₂MnO₄ + 3H₂O + KCl；3K₂MnO₄ + 2CO₂ = 2KMnO₄ + MnO₂↓ + 2K₂CO₃（或3K₂MnO₄ + 2H₂O = 2KMnO₄ + MnO₂↓ + 4KOH）",
+    pitfalls:[
+      {t:"耗时",x:"碱熔需小火预热再加大火力，全程约15~20分钟；通CO₂歧化要持续通气并观察颜色变化，约20分钟；浓缩结晶又要30分钟以上；总耗时约2~3个课时，且多个环节不能离人。"},
+      {t:"危险",x:"本实验风险较高——熔融的KOH强碱腐蚀性极强，溅出会造成严重烧伤；KClO₃是强氧化剂，与有机物混合研磨或加热可能爆炸，铁坩埚必须洁净干燥；高温明火操作必须戴护目镜和隔热手套，在通风处进行；CO₂钢瓶使用必须由老师指导。"},
+      {t:"易错",x:"碱熔时固体易膨胀溢出，MnO₂要分次小量加入并不断搅拌捣碎；通CO₂的终点判断（绿色K₂MnO₄褪尽）要准确，通气不足则产品中混有K₂MnO₄；过滤MnO₂要彻底，否则产品发黑；烘干温度不能超过60℃（KMnO₄约240℃分解，受热或光照会缓慢分解放氧）；产品溶液应避光保存。"}
+    ],
+    note:"KMnO₄的氧化能力和还原产物随介质酸碱性而变：酸性中还原为Mn²⁺（近无色）、中性或弱碱性中为MnO₂（褐色沉淀）、强碱性中为MnO₄²⁻（绿色）——这正是本实验分离提纯的理论核心。"
+  }
+];
+
+// ============ 本地数据层（localStorage） ============
+// 种子数据 = 当前内置的 26 个实验；运行时数据优先读本地存储，支持页面内管理后台增删改。
+var STORE_KEY='chem_exps_v1';
+function loadExperiments(){
+  try{
+    var raw=localStorage.getItem(STORE_KEY);
+    if(raw){
+      var arr=JSON.parse(raw);
+      if(Array.isArray(arr)){return arr;}
+    }
+  }catch(e){}
+  return JSON.parse(JSON.stringify(SEED_EXPERIMENTS));
+}
+function persistExperiments(){
+  try{localStorage.setItem(STORE_KEY,JSON.stringify(EXPERIMENTS));return true;}
+  catch(e){return false;}
+}
+var EXPERIMENTS=loadExperiments();
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// ============ 图标 ============
+function icBeaker(){return '<svg viewBox="0 0 24 24" fill="none"><path d="M9 4h6M9 4v5L6 15a2 2 0 0 0 1.8 3h8.4A2 2 0 0 0 18 15l-3-6V4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 13h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>'}
+function icFlask(){return '<svg viewBox="0 0 24 24" fill="none"><path d="M10 3h4M10 3v6l-5 9a2 2 0 0 0 1.8 3h6.4A2 2 0 0 0 17 18l-5-9V3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 14h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>'}
+function icGear(){return '<svg viewBox="0 0 24 24" fill="none"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" stroke="currentColor" stroke-width="1.6"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>'}
+function icDoc(){return '<svg viewBox="0 0 24 24" fill="none"><path d="M6 3h9l4 4v14H6V3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 3v5h5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 13h6M9 16h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>'}
+function icWarn(){return '<svg viewBox="0 0 24 24" fill="none"><path d="M12 4 2 20h20L12 4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 10v4M12 17v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>'}
+function icBulb(){return '<svg viewBox="0 0 24 24" fill="none"><path d="M9 18h6M10 21h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>'}
+function icBox(){return '<svg viewBox="0 0 24 24" fill="none"><path d="M3 8l9-5 9 5v8l-9 5-9-5V8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M3 8l9 5 9-5M12 13v8" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>'}
+
+// ============ 渲染 ============
+var elQ=document.getElementById('q');
+var elGo=document.getElementById('go');
+var elArea=document.getElementById('resultArea');
+var elHot=document.getElementById('hot');
+var elAll=document.getElementById('allList');
+var elCount=document.getElementById('expCount');
+
+function renderHot(){
+  var top=["粗盐提纯","制取氧气","二氧化碳","中和滴定","配制溶液","蒸馏","焰色反应","硝酸钾","高锰酸钾","水的硬度"];
+  var html='';
+  top.forEach(function(k){
+    html+='<span class="tag" data-k="'+k+'">'+k+'</span>';
+  });
+  elHot.innerHTML=html;
+}
+function renderAll(){
+  var html='';
+  EXPERIMENTS.forEach(function(e,i){
+    html+='<div class="cell" data-i="'+i+'"><div class="t">'+esc(e.name)+'</div><div class="c">'+esc(e.category)+'</div></div>';
+  });
+  elAll.innerHTML=html;
+  if(elCount){elCount.textContent='共 '+EXPERIMENTS.length+' 个实验';}
+}
+function renderDetail(e){
+  var steps='<ol class="ol-list">';
+  e.steps.forEach(function(st){
+    var stS=typeof st==='string'?st:(st.s||''),stW=typeof st==='string'?'':(st.w||'');
+    steps+='<li><div class="st-main">'+esc(stS)+(stW?'<div class="why"><b>为什么：</b>'+esc(stW)+'</div>':'')+'</div></li>';
+  });
+  steps+='</ol>';
+  var ins='<div class="chips">'+e.instruments.map(function(x){return '<span class="chip">'+esc(x)+'</span>'}).join('')+'</div>';
+  var mat='<div class="chips">'+e.materials.map(function(x){return '<span class="chip">'+esc(x)+'</span>'}).join('')+'</div>';
+  var sup=(e.supplies&&e.supplies.length)?'<div class="chips">'+e.supplies.map(function(x){return '<span class="chip chip-sup">'+esc(x)+'</span>'}).join('')+'</div>':'';
+  var pits='<div class="pit-list">';
+  (e.pitfalls||[]).forEach(function(p){
+    var cls=p.t==='耗时'?'t-time':(p.t==='危险'?'t-danger':'t-trap');
+    pits+='<div class="pit"><span class="pit-tag '+cls+'">'+esc(p.t)+'</span><span class="pit-txt">'+esc(p.x)+'</span></div>';
+  });
+  pits+='</div>';
+  var html=
+    '<div class="detail">'+
+      '<div class="detail-head"><span class="cat">'+esc(e.category)+'</span><h2>'+esc(e.name)+'</h2></div>'+
+      '<div class="detail-body">'+
+        '<div class="sec"><h3><span class="ic" style="background:var(--teal-soft);color:#0e7a63">'+icBeaker()+'</span>所需仪器</h3>'+ins+'</div>'+
+        '<div class="sec"><h3><span class="ic" style="background:#eef2fb;color:#1e6091">'+icFlask()+'</span>所需药品/试剂（含用量）</h3>'+mat+'</div>'+
+        (sup?'<div class="sec"><h3><span class="ic" style="background:#f8f3ea;color:#8a5a1d">'+icBox()+'</span>实验用品（耗材）</h3>'+sup+'</div>':'')+
+        (e.principle?'<div class="sec"><h3><span class="ic" style="background:#f4eefb;color:#6b3fa0">'+icBulb()+'</span>实验原理与用量核算</h3><div class="principle-box">'+esc(e.principle)+'</div></div>':'')+
+        '<div class="sec"><h3><span class="ic" style="background:var(--teal-soft);color:#0e7a63">'+icGear()+'</span>实验步骤与操作反思</h3>'+steps+'</div>'+
+        (e.equation!=='—'?'<div class="sec"><h3><span class="ic" style="background:#f3f6fa;color:#33475c">'+icDoc()+'</span>化学方程式 / 关键关系</h3><div class="eq-box">'+esc(e.equation)+'</div></div>':'')+
+        '<div class="sec"><h3><span class="ic" style="background:#fdecec;color:#b02a1e">'+icWarn()+'</span>实操难点与风险</h3>'+pits+'</div>'+
+        '<div class="sec"><h3><span class="ic" style="background:#fff3e2;color:#c26a1a">'+icWarn()+'</span>注意事项</h3><div class="note-box"><span class="nlabel">安全提醒：</span>'+esc(e.note)+'</div></div>'+
+      '</div>'+
+    '</div>';
+  elArea.innerHTML=html;
+}
+function renderMatches(list){
+  if(list.length===0){
+    elArea.innerHTML='<div class="empty"><div class="big">未找到</div>没有匹配该关键词的实验，试试“制氧气”“提纯”“滴定”等，或在下方全部实验中查找。</div>';
+    return;
+  }
+  var html='<div class="match-list">';
+  list.forEach(function(e,i){
+    html+='<div class="match-item" data-i="'+i+'"><span class="badge">'+esc(e.category)+'</span><span class="nm">'+esc(e.name)+'</span><span class="kw">'+esc(e.keywords.slice(0,3).join(' · '))+'</span><span class="arrow">›</span></div>';
+  });
+  html+='</div>';
+  elArea.innerHTML=html;
+  elArea.querySelectorAll('.match-item').forEach(function(node){
+    node.addEventListener('click',function(){
+      renderDetail(EXPERIMENTS[parseInt(node.getAttribute('data-i'),10)]);
+      scrollToResult();
+    });
+  });
+}
+function scrollToResult(){
+  try{elArea.scrollIntoView({behavior:'smooth',block:'start'});}catch(e){}
+}
+function search(kw){
+  kw=(kw||'').trim().toLowerCase();
+  if(!kw){
+    elArea.innerHTML='';
+    return;
+  }
+  var list=EXPERIMENTS.filter(function(e){
+    if(e.name.toLowerCase().indexOf(kw)>-1)return true;
+    if(e.category.toLowerCase().indexOf(kw)>-1)return true;
+    return e.keywords.some(function(k){return k.toLowerCase().indexOf(kw)>-1 || kw.indexOf(k.toLowerCase())>-1;});
+  });
+  if(list.length===1){
+    renderDetail(list[0]);
+  }else{
+    renderMatches(list);
+  }
+}
+
+// 事件绑定
+elGo.addEventListener('click',function(){search(elQ.value);});
+elQ.addEventListener('keydown',function(e){if(e.key==='Enter'){search(elQ.value);}});
+elHot.addEventListener('click',function(e){
+  var t=e.target.closest('.tag');
+  if(t){elQ.value=t.getAttribute('data-k');search(elQ.value);}
+});
+elAll.addEventListener('click',function(e){
+  var c=e.target.closest('.cell');
+  if(c){renderDetail(EXPERIMENTS[parseInt(c.getAttribute('data-i'),10)]);scrollToResult();}
+});
+
+// 初始
+renderHot();
+renderAll();
+
+// ============ 管理后台（本地版） ============
+// 数据存储：localStorage（键 chem_exps_v1）；口令仅本地防误操作，非安全认证。
+var PWD_KEY='chem_admin_pwd';
+var apIdx=-1;
+function apPwd(){try{return localStorage.getItem(PWD_KEY)||'';}catch(e){return '';}}
+function apSetPwd(p){try{localStorage.setItem(PWD_KEY,p);}catch(e){}}
+function apMsg(t){document.getElementById('f_msg').textContent=t||'';}
+
+var elGate=document.getElementById('adminGate');
+var elPanel=document.getElementById('adminPanel');
+var elApList=document.getElementById('apList');
+var elApForm=document.getElementById('apForm');
+var elApEmpty=document.getElementById('apEmpty');
+var gateMode='enter';
+
+function openGate(mode){
+  gateMode=mode;
+  elGate.hidden=false;
+  var p1=document.getElementById('gatePwd'),p2=document.getElementById('gatePwd2');
+  if(mode==='set'){
+    document.getElementById('gateTitle').textContent='设置管理口令';
+    document.getElementById('gateTip').textContent='首次使用请设置口令（至少 4 位）。实验数据保存在本浏览器本地存储中，口令仅用于防止误操作，并非安全认证。';
+    p2.hidden=false;
+    document.getElementById('gateOk').textContent='保存并进入';
+  }else{
+    document.getElementById('gateTitle').textContent='管理员口令';
+    document.getElementById('gateTip').textContent='实验数据保存在本浏览器的本地存储中，口令仅用于防止误操作。';
+    p2.hidden=true;
+    document.getElementById('gateOk').textContent='进入';
+  }
+  p1.value='';p2.value='';p1.focus();
+}
+function closeGate(){elGate.hidden=true;}
+document.getElementById('gateOk').addEventListener('click',function(){
+  var p=document.getElementById('gatePwd').value;
+  if(gateMode==='set'){
+    if(p.length<4){alert('口令至少 4 位');return;}
+    if(p!==document.getElementById('gatePwd2').value){alert('两次输入不一致');return;}
+    apSetPwd(p);closeGate();apOpen();
+  }else{
+    if(p===apPwd()){closeGate();apOpen();}
+    else{alert('口令不正确');}
+  }
+});
+document.getElementById('gateCancel').addEventListener('click',closeGate);
+document.getElementById('gateForgot').addEventListener('click',function(){
+  if(confirm('重置将清除本地口令并重新设置，实验数据不受影响。继续？')){
+    apSetPwd('');openGate('set');
+  }
+});
+document.getElementById('adminBtn').addEventListener('click',function(){
+  if(apPwd()){openGate('enter');}else{openGate('set');}
+});
+
+function apOpen(){
+  elPanel.hidden=false;
+  document.body.style.overflow='hidden';
+  apRenderList();apNew();
+}
+document.getElementById('apClose').addEventListener('click',function(){
+  elPanel.hidden=true;
+  document.body.style.overflow='';
+  refreshAll();
+});
+
+function apRenderList(){
+  var html='';
+  EXPERIMENTS.forEach(function(e,i){
+    html+='<div class="ap-item'+(i===apIdx?' on':'')+'" data-i="'+i+'"><div class="t">'+esc(e.name)+'</div><div class="c">'+esc(e.category||'')+'</div></div>';
+  });
+  elApList.innerHTML=html;
+  elApList.querySelectorAll('.ap-item').forEach(function(node){
+    node.addEventListener('click',function(){apLoad(parseInt(node.getAttribute('data-i'),10));});
+  });
+}
+function $(id){return document.getElementById(id);}
+function apNew(){
+  apIdx=-1;
+  elApEmpty.hidden=true;elApForm.hidden=false;
+  $('f_name').value='';$('f_category').value='';$('f_keywords').value='';
+  $('f_instruments').value='';$('f_materials').value='';$('f_supplies').value='';
+  $('f_principle').value='';$('f_equation').value='';$('f_note').value='';
+  apRenderSteps([]);apRenderPits([]);
+  $('f_delete').hidden=true;
+  apMsg('');
+}
+function apLoad(i){
+  var e=EXPERIMENTS[i];if(!e){return;}
+  apIdx=i;
+  elApEmpty.hidden=true;elApForm.hidden=false;
+  $('f_name').value=e.name||'';
+  $('f_category').value=e.category||'';
+  $('f_keywords').value=(e.keywords||[]).join(', ');
+  $('f_instruments').value=(e.instruments||[]).join('\n');
+  $('f_materials').value=(e.materials||[]).join('\n');
+  $('f_supplies').value=(e.supplies||[]).join('\n');
+  $('f_principle').value=e.principle||'';
+  $('f_equation').value=(e.equation&&e.equation!=='—')?e.equation:'';
+  $('f_note').value=e.note||'';
+  apRenderSteps(e.steps||[]);apRenderPits(e.pitfalls||[]);
+  $('f_delete').hidden=false;
+  apRenderList();
+  apMsg('');
+}
+function apRenumberSteps(){
+  var rows=$('f_steps').querySelectorAll('.step-row');
+  for(var i=0;i<rows.length;i++){rows[i].querySelector('.no').textContent='步骤 '+(i+1);}
+}
+function apStepRow(s,w){
+  var row=document.createElement('div');
+  row.className='step-row';
+  row.innerHTML='<div class="no"></div>'+
+    '<textarea class="i-s" rows="2" placeholder="步骤内容">'+esc(s)+'</textarea>'+
+    '<textarea class="i-w" rows="2" placeholder="为什么这样做（可留空）">'+esc(w)+'</textarea>'+
+    '<button type="button" class="row-del">删除此步</button>';
+  row.querySelector('.row-del').addEventListener('click',function(){row.remove();apRenumberSteps();});
+  return row;
+}
+function apRenderSteps(steps){
+  var box=$('f_steps');box.innerHTML='';
+  steps.forEach(function(st){
+    var s=typeof st==='string'?st:(st.s||''),w=typeof st==='string'?'':(st.w||'');
+    box.appendChild(apStepRow(s,w));
+  });
+  apRenumberSteps();
+}
+$('f_addStep').addEventListener('click',function(){
+  $('f_steps').appendChild(apStepRow('',''));
+  apRenumberSteps();
+});
+function apRenderPits(pits){
+  var box=$('f_pits');box.innerHTML='';
+  (pits||[]).forEach(function(p){box.appendChild(apPitRow(p.t,p.x));});
+}
+function apPitRow(t,x){
+  var row=document.createElement('div');
+  row.className='pit-row';
+  var opts=['耗时','危险','易错'].map(function(o){return '<option'+(o===t?' selected':'')+'>'+o+'</option>';}).join('');
+  row.innerHTML='<select class="i-t">'+opts+'</select>'+
+    '<textarea class="i-x" rows="2" placeholder="难点说明">'+esc(x||'')+'</textarea>'+
+    '<button type="button" class="row-del">删除</button>';
+  row.querySelector('.row-del').addEventListener('click',function(){row.remove();});
+  return row;
+}
+$('f_addPit').addEventListener('click',function(){
+  $('f_pits').appendChild(apPitRow('易错',''));
+});
+function apLines(id){
+  return $(id).value.split('\n').map(function(s){return s.trim();}).filter(function(s){return s;});
+}
+function apReadSteps(){
+  var out=[];
+  var rows=$('f_steps').querySelectorAll('.step-row');
+  for(var i=0;i<rows.length;i++){
+    var s=rows[i].querySelector('.i-s').value.trim();
+    var w=rows[i].querySelector('.i-w').value.trim();
+    if(s){out.push({s:s,w:w});}
+  }
+  return out;
+}
+function apReadPits(){
+  var out=[];
+  var rows=$('f_pits').querySelectorAll('.pit-row');
+  for(var i=0;i<rows.length;i++){
+    var x=rows[i].querySelector('.i-x').value.trim();
+    if(x){out.push({t:rows[i].querySelector('.i-t').value,x:x});}
+  }
+  return out;
+}
+elApForm.addEventListener('submit',function(ev){
+  ev.preventDefault();
+  var name=$('f_name').value.trim();
+  if(!name){apMsg('请填写实验名称');return;}
+  var instruments=apLines('f_instruments');
+  var materials=apLines('f_materials');
+  if(!instruments.length){apMsg('请至少填写一项所需仪器');return;}
+  if(!materials.length){apMsg('请至少填写一项所需药品/试剂');return;}
+  var steps=apReadSteps();
+  if(!steps.length){apMsg('请至少填写一个实验步骤');return;}
+  var exp={
+    name:name,
+    keywords:$('f_keywords').value.split(/[,，]/).map(function(s){return s.trim();}).filter(function(s){return s;}),
+    category:$('f_category').value.trim(),
+    instruments:instruments,
+    supplies:apLines('f_supplies'),
+    materials:materials,
+    steps:steps,
+    equation:$('f_equation').value.trim()||'—',
+    pitfalls:apReadPits(),
+    principle:$('f_principle').value.trim(),
+    note:$('f_note').value.trim()
+  };
+  var dup=-1;
+  for(var di=0;di<EXPERIMENTS.length;di++){if(EXPERIMENTS[di].name===name){dup=di;break;}}
+  if(dup>=0&&dup!==apIdx){
+    if(!confirm('已存在同名实验「'+name+'」，保存将覆盖原实验。继续？')){return;}
+    EXPERIMENTS.splice(dup,1);
+    if(apIdx>dup){apIdx=apIdx-1;}
+  }
+  if(apIdx>=0){EXPERIMENTS[apIdx]=exp;}else{EXPERIMENTS.push(exp);apIdx=EXPERIMENTS.length-1;}
+  persistExperiments();
+  apRenderList();
+  refreshAll();
+  removeDraftByName(name);
+  apMsg('已保存 ✓（'+EXPERIMENTS.length+' 个实验）');
+});
+$('f_delete').addEventListener('click',function(){
+  if(apIdx<0){return;}
+  if(!confirm('确定删除「'+EXPERIMENTS[apIdx].name+'」？此操作不可恢复。')){return;}
+  EXPERIMENTS.splice(apIdx,1);
+  persistExperiments();
+  apRenderList();apNew();refreshAll();
+  apMsg('已删除');
+});
+$('apNew').addEventListener('click',apNew);
+$('apExport').addEventListener('click',function(){
+  var blob=new Blob([JSON.stringify(EXPERIMENTS,null,2)],{type:'application/json'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='experiments-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();a.remove();
+  URL.revokeObjectURL(a.href);
+});
+$('apImport').addEventListener('click',function(){$('apImportFile').click();});
+$('apImportFile').addEventListener('change',function(ev){
+  var f=ev.target.files[0];if(!f){return;}
+  var r=new FileReader();
+  r.onload=function(){
+    try{
+      var arr=JSON.parse(r.result);
+      if(!Array.isArray(arr)){throw new Error('文件不是实验数组');}
+      for(var i=0;i<arr.length;i++){
+        if(!arr[i]||!arr[i].name||!Array.isArray(arr[i].steps)){throw new Error('第 '+(i+1)+' 条缺少 name 或 steps 字段');}
+      }
+      if(!confirm('导入将覆盖当前全部 '+EXPERIMENTS.length+' 个实验（文件共 '+arr.length+' 条），确定导入？')){return;}
+      EXPERIMENTS.length=0;
+      arr.forEach(function(e){EXPERIMENTS.push(e);});
+      persistExperiments();
+      apRenderList();apNew();refreshAll();
+      apMsg('导入成功，共 '+arr.length+' 条');
+    }catch(err){
+      alert('导入失败：'+err.message);
+    }
+    ev.target.value='';
+  };
+  r.readAsText(f);
+});
+$('apPwd').addEventListener('click',function(){
+  var p=prompt('输入新口令（至少 4 位）：');
+  if(p==null){return;}
+  if(p.length<4){alert('口令至少 4 位');return;}
+  apSetPwd(p);apMsg('口令已修改');
+});
+
+// 管理后台改动后刷新访客端视图
+function refreshAll(){
+  renderHot();renderAll();
+  var cur=elArea.querySelector('.detail-head h2');
+  if(cur){
+    var nm=cur.textContent;
+    for(var i=0;i<EXPERIMENTS.length;i++){
+      if(EXPERIMENTS[i].name===nm){renderDetail(EXPERIMENTS[i]);break;}
+    }
+  }
+}
+
+// ============ 资料上传与自动抽取（本地版） ============
+// 流程：读取 txt/pdf → 提取文字（pdf.js 文字层 / tesseract OCR）→
+//       按「实验N」标题切分 → 识别栏目（目的/原理/仪器试剂/步骤/注意事项）→
+//       条目分类（仪器/耗材/药品）→ 生成与页面 schema 一致的草稿（chem_drafts_v1）→ 人工核对后填入编辑器。
+var DRAFT_KEY='chem_drafts_v1';
+var uLibs={pdf:null,tess:null};
+function loadDrafts(){
+  try{
+    var raw=localStorage.getItem(DRAFT_KEY);
+    if(raw){var a=JSON.parse(raw);if(Array.isArray(a)){return a;}}
+  }catch(e){}
+  return [];
+}
+function saveDrafts(list){
+  try{localStorage.setItem(DRAFT_KEY,JSON.stringify(list));return true;}catch(e){return false;}
+}
+var DRAFTS=loadDrafts();
+function removeDraftByName(n){
+  var before=DRAFTS.length;
+  DRAFTS=DRAFTS.filter(function(d){return d.name!==n;});
+  if(DRAFTS.length!==before){
+    saveDrafts(DRAFTS);
+    renderDraftList();
+  }
+}
+function uLogReset(){var b=$('uLog');b.hidden=false;b.innerHTML='';}
+function uLog(msg,cls){
+  var b=$('uLog');
+  b.insertAdjacentHTML('beforeend','<div class="'+(cls||'')+'">'+esc(msg)+'</div>');
+  b.scrollTop=b.scrollHeight;
+}
+$('apUpload').addEventListener('click',function(){
+  $('uploadModal').hidden=false;
+  renderDraftList();
+});
+$('uClose').addEventListener('click',function(){$('uploadModal').hidden=true;});
+$('uploadModal').addEventListener('click',function(ev){
+  if(ev.target===this){this.hidden=true;}
+});
+
+// ---------- 草稿列表 ----------
+function renderDraftList(){
+  var box=$('uResult');
+  if(!DRAFTS.length){
+    box.innerHTML='<div class="u-none">暂无草稿。上传 txt / pdf 后将在此生成可编辑草稿。</div>';
+    return;
+  }
+  var html='';
+  DRAFTS.forEach(function(d,i){
+    var miss=(d._miss&&d._miss.length)
+      ?'<span class="d-miss">待补充：'+esc(d._miss.join('、'))+'</span>'
+      :'<span class="d-ok">信息完整</span>';
+    html+='<div class="draft-item">'+
+      '<div class="d-head"><b>'+esc(d.name)+'</b>'+
+      '<span class="d-meta">'+esc(d._src||'本地资料')+'</span>'+
+      '<span class="d-meta">仪器 '+(d.instruments||[]).length+' · 药品 '+(d.materials||[]).length+' · 步骤 '+(d.steps||[]).length+'</span>'+
+      miss+'</div>'+
+      '<div class="d-btns">'+
+      '<button class="btn-primary btn-sm" type="button" data-act="fill" data-i="'+i+'">填入编辑器</button>'+
+      '<button class="btn-ghost btn-sm" type="button" data-act="del" data-i="'+i+'">删除草稿</button>'+
+      '</div></div>';
+  });
+  box.innerHTML=html;
+  box.querySelectorAll('button[data-act]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var i=parseInt(b.getAttribute('data-i'),10);
+      if(b.getAttribute('data-act')==='fill'){
+        draftToForm(DRAFTS[i]);
+      }else{
+        DRAFTS.splice(i,1);saveDrafts(DRAFTS);renderDraftList();
+      }
+    });
+  });
+}
+function draftToForm(d){
+  if(!d){return;}
+  $('uploadModal').hidden=true;
+  elPanel.hidden=false;
+  document.body.style.overflow='hidden';
+  apNew();
+  $('f_name').value=d.name||'';
+  $('f_category').value=d.category||'';
+  $('f_keywords').value=(d.keywords||[]).join(', ');
+  $('f_instruments').value=(d.instruments||[]).join('\n');
+  $('f_materials').value=(d.materials||[]).join('\n');
+  $('f_supplies').value=(d.supplies||[]).join('\n');
+  $('f_principle').value=d.principle||'';
+  $('f_equation').value=(d.equation&&d.equation!=='—')?d.equation:'';
+  $('f_note').value=d.note||'';
+  apRenderSteps(d.steps||[]);apRenderPits(d.pitfalls||[]);
+  apMsg('草稿已填入，请核对用量并补全「为什么」与风险点后再保存');
+}
+
+// ---------- 外部库按需加载（多 CDN 回退；注意错误页也会触发 onload，必须校验全局变量） ----------
+// 注意：回退源必须自带 cmaps/ 与 standard_fonts/ 数据目录（unpkg 与 npm 包结构一致）；
+// cdnjs 的 pdf.js 包不含这些数据文件，不能作为回退源，否则中文 CID 字体会提取出 0 字。
+var U_BASES_PDF=['https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174','https://unpkg.com/pdfjs-dist@3.11.174'];
+var U_BASES_TESS=['https://cdn.jsdelivr.net/npm/tesseract.js@5','https://unpkg.com/tesseract.js@5'];
+var uLibs={pdf:null,tess:null,pdfBase:''};
+function uTryScript(url,check){
+  return new Promise(function(res,rej){
+    var s=document.createElement('script');
+    s.src=url;
+    s.onload=function(){
+      try{
+        if(check()){res();}else{rej(new Error('来源无效：'+url));}
+      }catch(e){rej(e);}
+    };
+    s.onerror=function(){rej(new Error('来源不可用：'+url));};
+    document.head.appendChild(s);
+  });
+}
+function uEnsurePdf(){
+  if(uLibs.pdf){return Promise.resolve(uLibs.pdf);}
+  var i=0;
+  function next(){
+    if(i>=U_BASES_PDF.length){
+      return Promise.reject(new Error('pdf.js 加载失败（已尝试多个来源），请检查网络后重试'));
+    }
+    var base=U_BASES_PDF[i++];
+    return uTryScript(base+'/build/pdf.min.js',function(){return !!window.pdfjsLib;})
+      .then(function(){
+        // 记录实际可用的来源，供 cmaps/standard_fonts 数据请求复用
+        uLibs.pdfBase=base;
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc=base+'/build/pdf.worker.min.js';
+        uLibs.pdf=window.pdfjsLib;
+        return uLibs.pdf;
+      })
+      .catch(next);
+  }
+  return next();
+}
+function uEnsureTess(){
+  if(uLibs.tess){return Promise.resolve(uLibs.tess);}
+  var i=0;
+  function next(){
+    if(i>=U_BASES_TESS.length){
+      return Promise.reject(new Error('tesseract.js 加载失败（已尝试多个来源），请检查网络后重试'));
+    }
+    var base=U_BASES_TESS[i++];
+    return uTryScript(base+'/dist/tesseract.min.js',function(){return !!window.Tesseract;})
+      .then(function(){
+        uLibs.tess=window.Tesseract;
+        return uLibs.tess;
+      })
+      .catch(next);
+  }
+  return next();
+}
+function uPdfOptions(buf){
+  // cMapUrl/standardFontDataUrl：支持 CID 字体（东亚字符）的文字映射
+  var base=uLibs.pdfBase||U_BASES_PDF[0];
+  return {data:buf,cMapUrl:base+'/cmaps/',cMapPacked:true,standardFontDataUrl:base+'/standard_fonts/'};
+}
+
+// ---------- 文件读取 ----------
+function decodeText(buf){
+  var u8=new Uint8Array(buf);
+  try{
+    var t=new TextDecoder('utf-8',{fatal:true}).decode(u8);
+    if(t.indexOf('\ufffd')<0){return t;}
+  }catch(e){}
+  try{return new TextDecoder('gbk').decode(u8);}catch(e){}
+  return new TextDecoder('utf-8').decode(u8);
+}
+function uPdfText(buf,from,to){
+  return uEnsurePdf().then(function(pdfjs){
+    return pdfjs.getDocument(uPdfOptions(buf)).promise.then(function(pdf){
+      var end=to>0?Math.min(to,pdf.numPages):pdf.numPages;
+      var start=Math.max(1,Math.min(from,pdf.numPages));
+      var out=[],total=0,empty=0;
+      uLog('PDF 共 '+pdf.numPages+' 页，读取第 '+start+'~'+end+' 页文字层');
+      var chain=Promise.resolve();
+      for(var p=start;p<=end;p++){
+        (function(pg){
+          chain=chain.then(function(){
+            return pdf.getPage(pg).then(function(page){
+              return page.getTextContent().then(function(tc){
+                var s='';
+                tc.items.forEach(function(it){s+=it.str+(it.hasEOL?'\n':'');});
+                var n=s.replace(/\s/g,'').length;
+                total+=n;
+                if(n<10){empty++;}
+                out.push(s);
+                if(pg===end||pg%10===0){uLog('已处理 '+pg+'/'+end+' 页');}
+              });
+            });
+          });
+        })(p);
+      }
+      return chain.then(function(){
+        if(total<50&&empty>(end-start+1)*0.6){
+          uLog('文字层极少（疑似扫描版 PDF），请改用「扫描版 PDF（OCR）」模式','warn');
+        }
+        return out.join('\n');
+      });
+    });
+  });
+}
+function uPdfOcr(buf,from,to){
+  return uEnsurePdf().then(function(pdfjs){
+    return uEnsureTess().then(function(Tess){
+      return pdfjs.getDocument(uPdfOptions(buf)).promise.then(function(pdf){
+        var end=to>0?Math.min(to,pdf.numPages):pdf.numPages;
+        var start=Math.max(1,Math.min(from,pdf.numPages));
+        var pages=end-start+1;
+        if(pages>8&&!confirm('OCR 识别 '+pages+' 页可能需要数分钟，确定继续？')){return '';}
+        uLog('OCR 模式：正在加载中文识别库（chi_sim，首次约 15MB）…');
+        return Tess.createWorker('chi_sim',1,{logger:function(m){
+          if(m.status==='recognizing text'){uLog('识别进度 '+Math.round((m.progress||0)*100)+'%');}
+        }}).then(function(worker){
+          var out=[];
+          var chain=Promise.resolve();
+          for(var p=start;p<=end;p++){
+            (function(pg){
+              chain=chain.then(function(){
+                return pdf.getPage(pg).then(function(page){
+                  var vp=page.getViewport({scale:2});
+                  var cv=document.createElement('canvas');
+                  cv.width=vp.width;cv.height=vp.height;
+                  return page.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise.then(function(){
+                    uLog('OCR 识别第 '+pg+'/'+end+' 页…');
+                    return worker.recognize(cv).then(function(r){
+                      out.push(r.data.text||'');
+                    });
+                  });
+                });
+              });
+            })(p);
+          }
+          return chain.then(function(){
+            return worker.terminate().then(function(){return out.join('\n');});
+          });
+        });
+      });
+    });
+  });
+}
+
+// ---------- 主流程 ----------
+// OCR 常见噪声：中文字符之间、数字与单位之间被插入空格（可能是不间断空格等），先规范化再解析
+// 注意：不能合并换行，行结构是栏目/步骤切分的依据
+// 用前瞻断言删除间隔符：若直接替换会消耗后一个汉字，导致重叠的空格只能消掉一半（如「实 验 目的」→「实验 目的」）
+var OCR_SP='[ \\t\\u000b\\f\\r\\u00a0\\u1680\\u2000-\\u200f\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff]+';
+var OCR_CJK=new RegExp('([\\u4e00-\\u9fff])'+OCR_SP+'(?=[\\u4e00-\\u9fff])','g');
+var OCR_UNIT=new RegExp('(\\d)'+OCR_SP+'(?=g|mg|kg|mL|L|mol|min|s|h|滴|支|个|片|瓶|次|℃|%)','g');
+var OCR_DOT=new RegExp('(\\d\\.)'+OCR_SP+'(?=\\d)','g'); // 「7. 5g」→「7.5g」
+function normalizeOcr(s){
+  var prev;
+  do{
+    prev=s;
+    s=s.replace(OCR_CJK,'$1').replace(OCR_UNIT,'$1').replace(OCR_DOT,'$1');
+  }while(s!==prev);
+  return s;
+}
+$('uStart').addEventListener('click',function(){
+  var f=$('uFile').files[0];
+  if(!f){alert('请先选择 txt 或 pdf 文件');return;}
+  var mode=document.querySelector('input[name=uMode]:checked').value;
+  var from=parseInt($('uFrom').value,10)||1;
+  var to=parseInt($('uTo').value,10)||0;
+  uLogReset();
+  $('uStart').disabled=true;$('uStart').textContent='抽取中…';
+  var job;
+  if(/\.pdf$/i.test(f.name)){
+    uLog('读取 PDF：'+f.name+'（'+(f.size/1024).toFixed(0)+' KB）');
+    job=f.arrayBuffer().then(function(buf){
+      return mode==='ocr'?uPdfOcr(buf,from,to):uPdfText(buf,from,to);
+    });
+  }else{
+    uLog('读取文本：'+f.name+'（'+(f.size/1024).toFixed(0)+' KB）');
+    job=f.arrayBuffer().then(decodeText);
+  }
+  job.then(function(text){
+    var clean=normalizeOcr(text.replace(/\r\n/g,'\n'));
+    var chars=clean.replace(/\s/g,'').length;
+    uLog('提取文字 '+chars+' 字，开始解析结构…','ok');
+    if(chars<50){uLog('有效文字过少，无法解析','err');return;}
+    var drafts=extractDraft(clean,f.name);
+    if(!drafts.length){
+      uLog('未识别到实验标题（需形如「实验一 XXX」的分节），请检查文件格式','err');
+      return;
+    }
+    drafts.forEach(function(d){DRAFTS.push(d);});
+    saveDrafts(DRAFTS);
+    uLog('生成 '+drafts.length+' 份草稿：'+drafts.map(function(d){return d.name;}).join('、'),'ok');
+    renderDraftList();
+  }).catch(function(err){
+    uLog('抽取失败：'+((err&&err.message)||err),'err');
+  }).then(function(){
+    $('uStart').disabled=false;$('uStart').textContent='开始抽取';
+  });
+});
+
+// ---------- 文本解析 ----------
+// 标题行识别：「实验N 标题」为主，「一、XXX实验」为辅（排除栏目标题）
+function matchExpHead(l){
+  var m=l.match(/^实验\s*([一二三四五六七八九十百零〇0-9]+)\s*[、.．:：\-—]?\s*(.{2,60})$/);
+  if(m){return m[2].trim();}
+  var m2=l.match(/^\s*[一二三四五六七八九十]+\s*、\s*(.{2,60})$/);
+  if(m2&&!SEC_TITLE_RE.test(m2[1].trim())&&/实验|测定|分析|提纯|制备|合成|配制|萃取|滴定|升华|结晶|电解|称量/.test(m2[1])){
+    return m2[1].trim();
+  }
+  return null;
+}
+// 按实验标题切分实验块，过滤页码行与高频页眉页脚；无标题时整篇视为一个草稿
+function splitExperiments(text){
+  var lines=text.split('\n');
+  var freq={};
+  lines.forEach(function(l){
+    var t=l.trim();
+    if(t&&t.length<24){freq[t]=(freq[t]||0)+1;}
+  });
+  var noise={};
+  Object.keys(freq).forEach(function(k){if(freq[k]>=3){noise[k]=1;}});
+  var clean=[];
+  lines.forEach(function(l){
+    var t=l.trim();
+    if(!t){clean.push('');return;}
+    if(/^\d{1,3}$/.test(t)){return;}
+    if(noise[t]){return;}
+    clean.push(t);
+  });
+  var firstHead=-1;
+  for(var i=0;i<clean.length;i++){
+    if(clean[i]&&matchExpHead(clean[i])){firstHead=i;break;}
+  }
+  var chunks=[],cur=null;
+  var start=firstHead>=0?firstHead:0;
+  for(var j=start;j<clean.length;j++){
+    var l=clean[j];
+    if(!l){if(cur){cur.lines.push('');}continue;}
+    var title=matchExpHead(l);
+    if(title){
+      cur={title:title,lines:[]};
+      chunks.push(cur);
+      continue;
+    }
+    if(!cur){cur={title:'未命名草稿',lines:[]};chunks.push(cur);}
+    cur.lines.push(l);
+  }
+  chunks.forEach(function(c){
+    c.title=c.title.replace(/实验$/,'').trim()||'未命名草稿';
+  });
+  return chunks.filter(function(c){return c.lines.join('').length>=30;});
+}
+var SEC_TITLE_RE=/^(实验目的|实验目标|实验原理|实验步骤|操作步骤|仪器与试剂|仪器设备|实验仪器|主要仪器|实验试剂|化学试剂|实验用品|实验内容|注意事项|思考题|问题讨论|数据处理|数据记录|实验结果|实验报告|预习|考核|评价|评分|小结|反思)/;
+var SEC_MAP=[
+  [/^(实验目的|实验目标|目的)$/,'purpose'],
+  [/^(实验原理|原理)$/,'principle'],
+  [/^(仪器与试剂|仪器设备|实验仪器|仪器|主要仪器|试剂|药品|实验试剂|化学试剂|实验用品|用品|材料|耗材)$/,'items'],
+  [/^(实验步骤|操作步骤|步骤|实验内容|内容|操作过程)$/,'steps'],
+  [/^(注意事项|安全须知|安全|实验要点|操作要点|要点提示)$/,'note'],
+  [/^(思考题|问题讨论|讨论|思考|思考与讨论)$/,'questions'],
+  [/^(数据处理|数据记录|实验结果|实验数据)$/,'data']
+];
+function mapSection(title){
+  for(var i=0;i<SEC_MAP.length;i++){
+    if(SEC_MAP[i][0].test(title)){return SEC_MAP[i][1];}
+  }
+  return null;
+}
+function extractFields(lines){
+  var f={purpose:'',principle:'',items:[],steps:[],note:'',questions:'',data:''};
+  var cur=null,buf=[];
+  function flush(){
+    if(!cur){buf=[];return;}
+    var txt=buf.join('\n').replace(/\n{2,}/g,'\n').trim();
+    buf=[];
+    if(!txt){return;}
+    if(cur==='purpose'){f.purpose=txt;}
+    else if(cur==='principle'){f.principle=txt;}
+    else if(cur==='note'){f.note=txt;}
+    else if(cur==='questions'){f.questions=txt;}
+    else if(cur==='data'){f.data=txt;}
+    else if(cur==='items'){
+      txt.split('\n').forEach(function(ln){
+        var t=ln.replace(/^\s*(仪器与试剂|仪器设备|实验仪器|主要仪器|实验试剂|化学试剂|实验用品|仪器|试剂|药品|用品|耗材)\s*[:：]\s*/,'');
+        f.items=f.items.concat(splitItems(t));
+      });
+    }
+    else if(cur==='steps'){
+      f.steps=f.steps.concat(splitSteps(txt.split('\n')));
+    }
+  }
+  lines.forEach(function(l){
+    if(!l.trim()){if(cur){buf.push('');}return;}
+    var h=l.trim().replace(/^[【\[（(]|[】\]）)]$/g,'').replace(/[:：]$/,'').trim();
+    var m=h.match(/^\s*(?:[一二三四五六七八九十]+|\d+)\s*、\s*(.+)$/);
+    var sec=m?mapSection(m[1].trim()):mapSection(h);
+    if(sec){flush();cur=sec;return;}
+    if(cur){buf.push(l.trim());}
+  });
+  flush();
+  return f;
+}
+// 条目切分：保护括号内容，按中文分号/顿号/逗号拆分
+function splitItems(line){
+  var out=[],cur='',depth=0;
+  for(var i=0;i<line.length;i++){
+    var ch=line[i];
+    if(ch==='（'||ch==='('||ch==='【'){depth++;cur+=ch;continue;}
+    if(ch==='）'||ch===')'||ch==='】'){if(depth>0){depth--;}cur+=ch;continue;}
+    if(depth===0&&(ch==='、'||ch==='；'||ch===';'||ch==='，'||ch===',')){
+      if(cur.trim()){out.push(cur.trim());}
+      cur='';continue;
+    }
+    cur+=ch;
+  }
+  if(cur.trim()){out.push(cur.trim());}
+  return out;
+}
+// 步骤切分：识别「1.」「1、」「(1)」「①」「第一步」等起始，其余行视为上一句续行
+function splitSteps(lines){
+  var items=[],buf=null;
+  function flush(){
+    if(buf&&buf.trim()){items.push(buf.replace(/\s+/g,' ').trim());}
+    buf=null;
+  }
+  lines.forEach(function(raw){
+    var l=raw.trim();
+    if(!l){return;}
+    // 步骤起始标记：数字+/、.．，,（OCR 常把「1.」识成「1，」）、(1)、①、第N步
+    var m=l.match(/^\s*(?:步骤\s*)?(\d{1,2})\s*([、.．，,])\s*(.*)$/);
+    if(m&&!/^\d/.test(m[3])){flush();buf=m[3];return;}
+    var m2=l.match(/^\s*[（(](\d{1,2})[)）]\s*(.+)$/);
+    if(m2){flush();buf=m2[2];return;}
+    var m3=l.match(/^\s*([①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳])\s*(.*)$/);
+    if(m3&&m3[2]){flush();buf=m3[2];return;}
+    var m4=l.match(/^\s*第\s*([一二三四五六七八九十]+)\s*步\s*[:：]?\s*(.*)$/);
+    if(m4){flush();buf=m4[2];return;}
+    if(buf){buf+=' '+l;}else{buf=l;}
+  });
+  flush();
+  return items;
+}
+// 条目分类：耗材 → 仪器 → 药品
+var SUPPLY_RE=/(滤纸|试纸|火柴|擦镜纸|称量纸|脱脂棉|棉花|吸水纸|抹布|毛巾|手套|标签|胶头滴管|滴管|乳胶管|橡皮管|纱布|线绳|导线|洗耳球|棉签|卫生纸|坐标纸|记录纸|碎纸)/;
+var INSTR_RE=/(烧杯|烧瓶|试管|容量瓶|移液管|吸量管|滴定管|漏斗|布氏|抽滤|量筒|量杯|锥形瓶|酒精灯|喷灯|电炉|电磁|搅拌|蒸发皿|坩埚|干燥器|离心|天平|台秤|光度计|分光|酸度计|pH计|电导仪|水浴|水泵|三脚架|铁架|铁圈|铁夹|蝴蝶夹|十字夹|螺旋夹|试管夹|坩埚钳|镊子|剪刀|打孔器|研钵|玛瑙|标准筛|洗瓶|玻棒|玻璃棒|温度计|冷凝管|蒸馏(?!水)|接引管|点滴板|称量瓶|药匙|石棉网|马弗炉|烘箱|油浴|砂浴|比色皿|电极|离子交换柱|层析|展开槽|电吹风|恒温|振荡|升降台|滴定台|毛玻璃|载玻片|盖玻片|紫外|冰箱|回流|分液|索氏|凯氏|定氮|仪器)/i;
+function classifyItem(item){
+  if(SUPPLY_RE.test(item)){return 'supplies';}
+  if(INSTR_RE.test(item)){return 'instruments';}
+  return 'materials';
+}
+// 方程式识别：要求含下标数字或箭头，避免误捕「pH=7」这类文本
+function detectEquation(text){
+  if(!text){return '';}
+  var hits=[];
+  text.split('\n').forEach(function(l){
+    var t=l.trim();
+    if(t.length>2&&t.length<300&&/[=→⇌]/.test(t)&&/[₀-₉]/.test(t)&&/[A-Za-z]/.test(t)){
+      hits.push(t.replace(/^(化学反应方程式|化学方程式|反应方程式|反应式|方程式)\s*[:：]?\s*/,''));
+    }
+  });
+  return hits.slice(0,3).join('\n');
+}
+function guessKeywords(title,f){
+  var set={};
+  if(title){set[title]=1;}
+  var pool=(title||'')+' '+(f.materials||[]).slice(0,6).join(' ');
+  var re=/([A-Za-z][A-Za-z₀-₉]{1,9})/g,m;
+  while((m=re.exec(pool))){
+    var t=m[1];
+    if(/^(mL|mol|L|g|kg|min|cm|mm|pH|h|s)$/.test(t)){continue;}
+    set[t]=1;
+  }
+  return Object.keys(set);
+}
+// 汇总为与页面 schema 一致的草稿
+function extractDraft(text,src){
+  var chunks=splitExperiments(text);
+  var drafts=[];
+  chunks.forEach(function(ch){
+    var f=extractFields(ch.lines);
+    var instruments=[],supplies=[],materials=[];
+    f.items.forEach(function(it){
+      var k=classifyItem(it);
+      if(k==='supplies'){supplies.push(it);}
+      else if(k==='instruments'){instruments.push(it);}
+      else{materials.push(it);}
+    });
+    var principle='';
+    if(f.purpose){principle='【实验目的】'+f.purpose;}
+    if(f.principle){principle+=(principle?'\n':'')+f.principle;}
+    var noteParts=[];
+    if(f.questions){noteParts.push('【思考题】'+f.questions);}
+    if(f.data){noteParts.push('【数据记录】'+f.data);}
+    var pitfalls=(f.note?f.note.split('\n'):[])
+      .map(function(l){return l.trim();})
+      .filter(function(l){return l.length>4;})
+      .map(function(l){
+        var t='易错';
+        if(/危险|安全|有毒|有害|腐蚀|爆炸|烫|灼|易燃|刺激|通风/.test(l)){t='危险';}
+        else if(/耗时|时间过长|过长|过短|过快|缓慢|延长|缩短/.test(l)){t='耗时';}
+        return {t:t,x:l};
+      });
+    var steps=f.steps.map(function(s){return {s:s,w:''};});
+    var miss=[];
+    if(!instruments.length){miss.push('仪器');}
+    if(!materials.length){miss.push('药品');}
+    if(!steps.length){miss.push('步骤');}
+    if(!principle){miss.push('原理');}
+    if(steps.length&&steps.every(function(s){return !s.w;})){miss.push('为什么');}
+    if(!pitfalls.length){miss.push('风险');}
+    drafts.push({
+      name:ch.title,
+      keywords:guessKeywords(ch.title,f),
+      category:'',
+      instruments:instruments,
+      supplies:supplies,
+      materials:materials,
+      principle:principle,
+      equation:detectEquation(f.principle||'')||'—',
+      steps:steps,
+      pitfalls:pitfalls,
+      note:noteParts.join('\n\n'),
+      _src:src||'本地资料',
+      _miss:miss
+    });
+  });
+  return drafts;
+}
+</script>
+</body>
+</html>
